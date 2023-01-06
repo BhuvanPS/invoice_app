@@ -45,9 +45,7 @@ class _transactionListState extends State<transactionList> {
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (context, index) {
                     DocumentSnapshot trans = snapshot.data!.docs[index];
-                    // outstanding = trans['type'] == 'credit'
-                    //     ? outstanding += trans['Amount']
-                    //     : outstanding -= trans['Amount'];
+
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
