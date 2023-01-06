@@ -12,6 +12,7 @@ class getInvDetails extends StatefulWidget {
 }
 
 class _getInvDetailsState extends State<getInvDetails> {
+  final putComma = addCommasIndian();
   var selectedparty;
   late String gstn = '';
   late String addLin1 = '';
@@ -21,7 +22,8 @@ class _getInvDetailsState extends State<getInvDetails> {
   late String gstRate = '5';
   late String price = '';
   late String quantity = '';
-  late int Amount;
+  late int Amount = 0;
+  late String prevAmt = '';
   TextEditingController invno = new TextEditingController();
   TextEditingController product = new TextEditingController();
   TextEditingController dateInput = TextEditingController();
@@ -36,6 +38,8 @@ class _getInvDetailsState extends State<getInvDetails> {
 
   @override
   void initState() {
+    Amount = 0;
+
     dateInput.text = DateFormat.yMMMMd().format(DateTime.now());
     dueDateInput.text = DateFormat.yMMMMd().format(DateTime.now());
     super.initState();
@@ -78,7 +82,8 @@ class _getInvDetailsState extends State<getInvDetails> {
                 child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextFormField(
                     keyboardType: TextInputType.number,
@@ -114,7 +119,7 @@ class _getInvDetailsState extends State<getInvDetails> {
                     //editing controller of this TextField
                     decoration: InputDecoration(
                         icon: Icon(Icons.calendar_today), //icon of text field
-                        labelText: "Enter Date" //label text of field
+                        labelText: "Enter Due Date" //label text of field
                         ),
                     readOnly: true,
                     onTap: () async {
@@ -132,6 +137,16 @@ class _getInvDetailsState extends State<getInvDetails> {
                         });
                       }
                     },
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    'Client Name',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(
+                    height: 5,
                   ),
                   StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
@@ -159,10 +174,6 @@ class _getInvDetailsState extends State<getInvDetails> {
                         return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                'Client Name',
-                                style: TextStyle(fontSize: 16),
-                              ),
                               DropdownButton(
                                 alignment: AlignmentDirectional.center,
                                 menuMaxHeight: 300,
@@ -232,7 +243,12 @@ class _getInvDetailsState extends State<getInvDetails> {
                     decoration: InputDecoration(labelText: 'Qty'),
                     onChanged: (val) {
                       setState(() {
-                        quantity = val;
+                        if (val.isEmpty) {
+                          quantity = '0';
+                        } else {
+                          quantity = val;
+                        }
+                        Amount = int.parse(price) * int.parse(quantity);
                       });
                     },
                   ),
@@ -242,40 +258,57 @@ class _getInvDetailsState extends State<getInvDetails> {
                     decoration: InputDecoration(labelText: 'Rate'),
                     onChanged: (val) {
                       setState(() {
-                        price = val;
+                        if (val.isEmpty) {
+                          price = '0';
+                        } else {
+                          price = val;
+                        }
+                        Amount = int.parse(price) * int.parse(quantity);
                       });
+                      // Amount = int.parse(price) * int.parse(quantity);
                     },
                   ),
+                  SizedBox(
+                    height: 15,
+                  ),
 
-                  TextButton(
-                    onPressed: () {
-                      Amount = int.parse(price) * int.parse(quantity);
-                      //print(putcomma(Amount));
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) {
-                            return pdfgen(
-                              invno: invno.text,
-                              gstn: gstn.toString(),
-                              partyName: selectedparty.toString().toUpperCase(),
-                              line1: addLin1.toUpperCase(),
-                              line2: addLin2.toUpperCase(),
-                              pin: pincode.toUpperCase(),
-                              invDate: dateInput.text,
-                              dueDate: dueDateInput.text,
-                              product: product.text,
-                              qty: quantity,
-                              rate: price,
-                              amt: putcomma(Amount).toString(),
-                              hsn: hsncode,
-                              gstr: gstRate,
-                              Acamount: Amount.toString(),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    child: Text('Proceed'),
+                  Text(
+                    (putComma(Amount)).toString(),
+                    style: TextStyle(fontSize: 25),
+                  ),
+
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Amount = int.parse(price) * int.parse(quantity);
+                        //print(putcomma(Amount));
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) {
+                              return pdfgen(
+                                invno: invno.text,
+                                gstn: gstn.toString(),
+                                partyName:
+                                    selectedparty.toString().toUpperCase(),
+                                line1: addLin1.toUpperCase(),
+                                line2: addLin2.toUpperCase(),
+                                pin: pincode.toUpperCase(),
+                                invDate: dateInput.text,
+                                dueDate: dueDateInput.text,
+                                product: product.text,
+                                qty: quantity,
+                                rate: price,
+                                amt: putcomma(Amount).toString(),
+                                hsn: hsncode,
+                                gstr: gstRate,
+                                Acamount: Amount.toString(),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      child: Text('Proceed'),
+                    ),
                   ),
                 ],
               ),

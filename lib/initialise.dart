@@ -33,7 +33,10 @@ class _initialiseState extends State<initialise> {
 
           return ListView(
             children: snapshot.data!.docs.map((document) {
-              return clientInfo(name: document['name'], gstn: document['gstn']);
+              return clientInfo(
+                  name: document['name'],
+                  gstn: document['gstn'],
+                  docId: document['docId']);
             }).toList(),
           );
         },

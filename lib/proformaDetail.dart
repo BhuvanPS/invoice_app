@@ -36,7 +36,7 @@ class _proformaDetailState extends State<proformaDetail> {
                 return Container(
                   child: Column(
                     children: [
-                      Text(prInvoice['invno'].toString()),
+                      Text('INV NO :' + prInvoice['invno'].toString()),
                       Text(prInvoice['BilledTo']),
                       Text(prInvoice['Quantity']),
                       Text(prInvoice['Rate']),

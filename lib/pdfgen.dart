@@ -53,6 +53,7 @@ class _pdfgenState extends State<pdfgen> {
   Future<void> uploadingData(
     String invno,
     String invdate,
+    String dueDate,
     String gstn,
     String partyname,
     String gstr,
@@ -66,6 +67,7 @@ class _pdfgenState extends State<pdfgen> {
     await FirebaseFirestore.instance.collection("proformaInvoices").add({
       'invno': int.parse(invno),
       'invDate': invdate,
+      'dueDate': dueDate,
       'BilledTo': partyname,
       'gstn': gstn,
       'Quantity': qty,
@@ -572,6 +574,18 @@ class _pdfgenState extends State<pdfgen> {
         appBar: AppBar(),
         body: Column(
           children: [
+            Text(widget.amt),
+            Text('GST' +
+                ((int.parse(widget.Acamount)) *
+                        (double.parse(widget.gstr)) /
+                        100)
+                    .toString()),
+            Text('TOTAL : ' +
+                ((int.parse(widget.Acamount)) +
+                        ((int.parse(widget.Acamount)) *
+                            (double.parse(widget.gstr)) /
+                            100))
+                    .toString()),
             Center(
                 child: TextButton(
                     onPressed: () {
@@ -600,6 +614,7 @@ class _pdfgenState extends State<pdfgen> {
                     uploadingData(
                       widget.invno,
                       widget.invDate,
+                      widget.dueDate,
                       widget.gstn,
                       widget.partyName,
                       widget.gstr,
