@@ -26,7 +26,10 @@ class _addTransState extends State<addTrans> {
       'Amount': int.parse(amt),
       'type': typeofPayment,
       'Date': DateTime.now()
-    });
+    }).then((value) => FirebaseFirestore.instance
+        .collection('transactions')
+        .doc(value.id)
+        .update({'transactionId': value.id}));
   }
 
   void _submit() {

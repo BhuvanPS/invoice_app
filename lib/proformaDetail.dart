@@ -40,7 +40,8 @@ class _proformaDetailState extends State<proformaDetail> {
                       Text(prInvoice['BilledTo']),
                       Text(prInvoice['Quantity']),
                       Text(prInvoice['Rate']),
-                      Text(prInvoice['TotalAmount'].toString())
+                      Text(prInvoice['TotalAmount'].toString()),
+                      Text(prInvoice['product']),
                     ],
                   ),
                 );

@@ -42,6 +42,8 @@ class _getInvDetailsState extends State<getInvDetails> {
 
     dateInput.text = DateFormat.yMMMMd().format(DateTime.now());
     dueDateInput.text = DateFormat.yMMMMd().format(DateTime.now());
+
+    // FirebaseFirestore.instance.collection('clients').snapshots();
     super.initState();
   }
 
@@ -162,12 +164,13 @@ class _getInvDetailsState extends State<getInvDetails> {
                         List<DropdownMenuItem> parties = [];
                         for (int i = 0; i < snapshot.data!.docs.length; i++) {
                           DocumentSnapshot ds = snapshot.data!.docs[i];
+
                           parties.add(
                             DropdownMenuItem(
+                              value: "${ds['name']!}",
                               child: Text(
-                                ds.get('name'),
+                                ds['name']!,
                               ),
-                              value: "${ds.get('name')}",
                             ),
                           );
                         }

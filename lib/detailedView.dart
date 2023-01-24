@@ -27,14 +27,18 @@ class _detailedViewState extends State<detailedView> {
         .then((querySnapshot) {
       querySnapshot.docs.forEach((element) {
         if (element.data()['type'] == 'credit') {
-          sum = sum + element.data()['Amount'];
-        } else {
           sum = sum - element.data()['Amount'];
+        } else {
+          sum = sum + element.data()['Amount'];
         }
       });
       setState(() {
         total = sum;
       });
+      FirebaseFirestore.instance
+          .collection('clients')
+          .doc(widget.id.trim())
+          .update({'outstanding': total});
     });
     super.initState();
   }
@@ -79,10 +83,14 @@ class _detailedViewState extends State<detailedView> {
                                   .then((querySnapshot) {
                                 querySnapshot.docs.forEach((element) {
                                   if (element.data()['type'] == 'credit') {
-                                    sum = sum + element.data()['Amount'];
-                                  } else {
                                     sum = sum - element.data()['Amount'];
+                                  } else {
+                                    sum = sum + element.data()['Amount'];
                                   }
+                                  FirebaseFirestore.instance
+                                      .collection('clients')
+                                      .doc(widget.id.trim())
+                                      .update({'outstanding': sum});
                                 });
                                 setState(() {
                                   total = sum;

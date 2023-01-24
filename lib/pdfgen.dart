@@ -60,6 +60,7 @@ class _pdfgenState extends State<pdfgen> {
     String rate,
     String qty,
     String Acamount,
+    String product,
   ) async {
     double getAmt = double.parse(Acamount);
     int gstAmt = (((double.parse(gstr)) / 200) * getAmt).round();
@@ -76,6 +77,7 @@ class _pdfgenState extends State<pdfgen> {
       'SGST': gstAmt,
       'CGST': gstAmt,
       'TotalAmount': totalamt,
+      'product': product,
     }).then((value) {
       FirebaseFirestore.instance
           .collection('proformaInvoices')
@@ -621,6 +623,7 @@ class _pdfgenState extends State<pdfgen> {
                       widget.rate,
                       widget.qty,
                       widget.Acamount,
+                      widget.product,
                     );
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
