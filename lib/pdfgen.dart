@@ -51,17 +51,17 @@ class pdfgen extends StatefulWidget {
 class _pdfgenState extends State<pdfgen> {
   int saveCount = 0;
   Future<void> uploadingData(
-    String invno,
-    String invdate,
-    String dueDate,
-    String gstn,
-    String partyname,
-    String gstr,
-    String rate,
-    String qty,
-    String Acamount,
-    String product,
-  ) async {
+      String invno,
+      String invdate,
+      String dueDate,
+      String gstn,
+      String partyname,
+      String gstr,
+      String rate,
+      String qty,
+      String Acamount,
+      String product,
+      String hsn) async {
     double getAmt = double.parse(Acamount);
     int gstAmt = (((double.parse(gstr)) / 200) * getAmt).round();
     int totalamt = getAmt.round() + (gstAmt * 2).round();
@@ -78,6 +78,7 @@ class _pdfgenState extends State<pdfgen> {
       'CGST': gstAmt,
       'TotalAmount': totalamt,
       'product': product,
+      'hsn': hsn,
     }).then((value) {
       FirebaseFirestore.instance
           .collection('proformaInvoices')
@@ -624,6 +625,7 @@ class _pdfgenState extends State<pdfgen> {
                       widget.qty,
                       widget.Acamount,
                       widget.product,
+                      widget.hsn,
                     );
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

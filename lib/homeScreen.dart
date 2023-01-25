@@ -58,14 +58,18 @@ class _homeScreenState extends State<homeScreen> {
         ),
       ),
       body: Center(
-        child: TextButton(
-          child: Text('View All Proforma'),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-              return viewProforma();
-            }));
-          },
+        child: Column(
+          children: [
+            TextButton(
+              child: Text('View All Proforma'),
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                  return viewProforma();
+                }));
+              },
+            ),
+          ],
         ),
       ),
     );

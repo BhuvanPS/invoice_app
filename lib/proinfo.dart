@@ -19,7 +19,7 @@ class _proinfoState extends State<proinfo> {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-          return proformaDetail(invno: widget.invno);
+          return proformaDetail(docId: widget.docId);
         }));
       },
       onLongPress: () async {
@@ -73,7 +73,7 @@ class _proinfoState extends State<proinfo> {
         height: 50,
         child: Row(
           children: [
-            Icon(Icons.note_add),
+            Icon(Icons.request_page_sharp),
             SizedBox(
               width: 5,
             ),

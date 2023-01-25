@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:inventory/Authentication.dart';
 
 class transactionList extends StatefulWidget {
   final String docId;
@@ -16,6 +17,11 @@ class _transactionListState extends State<transactionList> {
 
   @override
   void initState() {
+    myStream = FirebaseFirestore.instance
+        .collection('transactions')
+        .where('partyId', isEqualTo: widget.docId.trim())
+        .orderBy('Date', descending: true)
+        .snapshots();
     super.initState();
   }
 
@@ -24,35 +30,40 @@ class _transactionListState extends State<transactionList> {
     return Scaffold(
       appBar: AppBar(),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('transactions')
-            .where('partyId', isEqualTo: widget.docId.trim())
-            .orderBy('Date', descending: true)
-            .snapshots(),
+        stream: myStream,
         builder: (BuildContext context,
             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: Text('NO data'),
-            );
-          } else {
-            return ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                DocumentSnapshot trans = snapshot.data!.docs[index];
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
+          if (snapshot.data!.docs.isEmpty) {
+            print("no data");
+            return Placeholder();
+          }
+          print("hiihidf");
+          print(snapshot.data!.docs);
+          return ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              DocumentSnapshot trans = snapshot.data!.docs[index];
 
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onLongPress: () async {
-                      return showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                                actions: [
-                                  TextButton(
-                                      onPressed: () {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onLongPress: () async {
+                    return showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                              actions: [
+                                TextButton(
+                                    onPressed: () async {
+                                      bool isAuthenticated =
+                                          await Authentication
+                                              .authenticateWithBiometrics();
+
+                                      if (isAuthenticated) {
                                         FirebaseFirestore.instance
                                             .collection('transactions')
                                             .doc(trans['transactionId'])
@@ -72,45 +83,46 @@ class _transactionListState extends State<transactionList> {
                                             ],
                                           )),
                                         );
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.delete),
-                                          Text('  Delete'),
-                                        ],
-                                      )),
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.edit),
-                                          Text('  Edit'),
-                                        ],
-                                      )),
-                                ],
-                              ));
-                    },
-                    child: Container(
-                      color: Colors.grey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text((trans['Amount'].toString())),
-                          Text(DateFormat('dd-MMM-yy ~ HH:mm')
-                              .format(trans['Date'].toDate())
-                              .toString()),
-                          Text(trans['type']),
-                          //Text(widget.docId),
-                        ],
-                      ),
+                                      }
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.delete),
+                                        Text('  Delete'),
+                                      ],
+                                    )),
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.edit),
+                                        Text('  Edit'),
+                                      ],
+                                    )),
+                              ],
+                            ));
+                  },
+                  child: Container(
+                    color: Colors.grey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text((trans['Amount'].toString())),
+                        Text(DateFormat('dd-MMM-yy ~ HH:mm')
+                            .format(trans['Date'].toDate())
+                            .toString()),
+                        Text(trans['type']),
+                        //Text(widget.docId),
+                      ],
                     ),
                   ),
-                );
-              },
-            );
-          }
+                ),
+              );
+            },
+          );
+
           ;
         },
       ),
