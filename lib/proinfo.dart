@@ -67,10 +67,13 @@ class _proinfoState extends State<proinfo> {
                 ));
       },
       child: Container(
-        color: Colors.blueGrey,
+        decoration: BoxDecoration(
+          color: Colors.green,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        //color: Colors.blueGrey,
         padding: EdgeInsets.fromLTRB(0, 5, 0, 8),
         margin: EdgeInsets.all(10),
-        height: 50,
         child: Row(
           children: [
             Icon(Icons.request_page_sharp),

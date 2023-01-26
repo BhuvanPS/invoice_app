@@ -56,6 +56,7 @@ class _transactionListState extends State<transactionList> {
                     return showDialog(
                         context: context,
                         builder: (ctx) => AlertDialog(
+                              title: Text("Options"),
                               actions: [
                                 TextButton(
                                     onPressed: () async {
@@ -73,15 +74,27 @@ class _transactionListState extends State<transactionList> {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           SnackBar(
+                                              backgroundColor: Colors.white,
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              // margin:
+                                              //     EdgeInsets.only(bottom: 10),
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8)),
                                               content: Row(
-                                            children: [
-                                              Text('Deleted Successfully '),
-                                              Icon(
-                                                Icons.done_outlined,
-                                                color: Colors.green,
-                                              )
-                                            ],
-                                          )),
+                                                children: [
+                                                  Text(
+                                                    'Deleted Successfully ',
+                                                    style: TextStyle(
+                                                        color: Colors.black),
+                                                  ),
+                                                  Icon(
+                                                    Icons.done_outlined,
+                                                    color: Colors.green,
+                                                  )
+                                                ],
+                                              )),
                                         );
                                       }
                                     },
@@ -105,7 +118,9 @@ class _transactionListState extends State<transactionList> {
                             ));
                   },
                   child: Container(
-                    color: Colors.grey,
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(7)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

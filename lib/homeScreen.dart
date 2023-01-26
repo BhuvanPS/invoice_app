@@ -4,6 +4,7 @@ import 'package:inventory/initialise.dart';
 import 'package:inventory/viewProforma.dart';
 
 import './getInvDetails.dart';
+import './gstnSearch/gstnSearch.dart';
 
 class homeScreen extends StatefulWidget {
   const homeScreen({Key? key}) : super(key: key);
@@ -69,6 +70,9 @@ class _homeScreenState extends State<homeScreen> {
                 }));
               },
             ),
+            ElevatedButton(onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (_){return gstnSearch();}));
+            }, child: Text('Search Gstn'))
           ],
         ),
       ),

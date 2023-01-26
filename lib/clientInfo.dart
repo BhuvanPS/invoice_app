@@ -27,12 +27,14 @@ class _clientInfoState extends State<clientInfo> {
         );
       },
       child: Material(
+        borderRadius: BorderRadius.circular(8),
         elevation: 5,
         child: Container(
-          color: Colors.pink,
+          decoration: BoxDecoration(
+              color: Colors.blueGrey, borderRadius: BorderRadius.circular(18)),
+          //color: Colors.pink,
           padding: EdgeInsets.fromLTRB(0, 5, 0, 8),
           margin: EdgeInsets.all(10),
-          height: 50,
           child: Column(
             children: [
               Text(widget.name),
