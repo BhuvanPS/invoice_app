@@ -5,8 +5,9 @@ import 'package:inventory/transactionList.dart';
 
 class detailedView extends StatefulWidget {
   final String id;
+  final String name;
 
-  detailedView({required this.id});
+  detailedView({required this.id, required this.name});
 
   @override
   State<detailedView> createState() => _detailedViewState();
@@ -47,7 +48,7 @@ class _detailedViewState extends State<detailedView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Details'),
+        title: Text(widget.name),
       ),
       body: SingleChildScrollView(
         child: StreamBuilder(

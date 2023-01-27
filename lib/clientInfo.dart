@@ -21,7 +21,10 @@ class _clientInfoState extends State<clientInfo> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) {
-              return detailedView(id: widget.docId);
+              return detailedView(
+                id: widget.docId,
+                name: widget.name,
+              );
             },
           ),
         );

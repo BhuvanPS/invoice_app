@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -12,10 +14,11 @@ class addTrans extends StatefulWidget {
 class _addTransState extends State<addTrans> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController amount = TextEditingController();
-  TextEditingController type = TextEditingController();
+  TextEditingController description = TextEditingController();
 
   late String amt = '';
-  late String typeofPayment = '';
+  var typeofPayment;
+  late String des = '';
 
   Future<void> uploadingData(
     String amt,
@@ -25,11 +28,26 @@ class _addTransState extends State<addTrans> {
       'partyId': id,
       'Amount': int.parse(amt),
       'type': typeofPayment,
-      'Date': DateTime.now()
+      'Date': DateTime.now(),
+      'Description': des
     }).then((value) => FirebaseFirestore.instance
         .collection('transactions')
         .doc(value.id)
         .update({'transactionId': value.id}));
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: Colors.black,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        content: Text('Transaction Added'),
+        duration: Duration(milliseconds: 750),
+      ),
+    );
+    Timer(Duration(milliseconds: 1200), () {
+      Navigator.of(context).pop();
+    });
   }
 
   void _submit() {
@@ -39,9 +57,8 @@ class _addTransState extends State<addTrans> {
     } else {
       _formKey.currentState!.save();
       FocusManager.instance.primaryFocus?.unfocus();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Transaction Added')),
-      );
+      uploadingData(amt, widget.id.trim());
+
       //verified = true;
 
     }
@@ -60,6 +77,7 @@ class _addTransState extends State<addTrans> {
             child: Column(
               children: [
                 TextFormField(
+                  keyboardType: TextInputType.number,
                   controller: amount,
                   decoration: InputDecoration(
                     labelText: 'Amount',
@@ -79,10 +97,34 @@ class _addTransState extends State<addTrans> {
                     amt = value!;
                   },
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    new Radio(
+                        value: 'debit',
+                        groupValue: typeofPayment,
+                        onChanged: (value) {
+                          setState(() {
+                            typeofPayment = value!;
+                          });
+                        }),
+                    Text('Debit'),
+                    new Radio(
+                        value: 'credit',
+                        groupValue: typeofPayment,
+                        onChanged: (value) {
+                          setState(() {
+                            typeofPayment = value!;
+                          });
+                          print(typeofPayment);
+                        }),
+                    Text('Credit'),
+                  ],
+                ),
                 TextFormField(
-                  controller: type,
+                  controller: description,
                   decoration: InputDecoration(
-                    labelText: 'Type',
+                    labelText: 'Description',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15.0),
                       borderSide: BorderSide(),
@@ -90,20 +132,19 @@ class _addTransState extends State<addTrans> {
                   ),
                   onFieldSubmitted: (value) {},
                   validator: (value) {
-                    if (value!.isEmpty || value == null) {
-                      return 'Enter Text';
-                    }
+                    // if (value!.isEmpty || value == null) {
+                    //   return 'Enter Text';
+                    // }
                     return null;
                   },
                   onSaved: (value) {
-                    typeofPayment = value!;
+                    des = value!;
                   },
                 ),
                 Center(
                   child: TextButton(
                     onPressed: () {
                       _submit();
-                      uploadingData(amt, widget.id.trim());
                     },
                     child: Text('Add'),
                   ),

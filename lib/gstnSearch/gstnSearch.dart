@@ -19,6 +19,7 @@ class _gstnSearchState extends State<gstnSearch> {
   late String legalName = "";
   late String rcvdgst = "";
   late String address = "";
+  late String category = "";
   bool isDetailsAvailable = false;
   bool isbuttonClicked = false;
 
@@ -35,7 +36,9 @@ class _gstnSearchState extends State<gstnSearch> {
         doorno: data['data']['pradr']['addr']['bno'],
         adlin1: data['data']['pradr']['addr']['bnm'],
         street: data['data']['pradr']['addr']['st'],
-        location: data['data']['pradr']['addr']['loc']);
+        location: data['data']['pradr']['addr']['loc'],
+        category: data['data']['ctb'],
+        pincode: data['data']['pradr']['addr']['pncd']);
 
     setState(() {
       isDetailsAvailable = true;
@@ -48,6 +51,7 @@ class _gstnSearchState extends State<gstnSearch> {
           partyObject.street.toString() +
           ' ' +
           partyObject.location.toString();
+      category = partyObject.category;
     });
     //print(tradeName);
   }
@@ -74,20 +78,22 @@ class _gstnSearchState extends State<gstnSearch> {
             },
             child: Text('Search'),
           ),
-          if (isbuttonClicked & !isDetailsAvailable)
+          if (isbuttonClicked & !isDetailsAvailable & gstnumber.text.isNotEmpty)
             Container(
               child: CircularProgressIndicator(),
             ),
           if (isDetailsAvailable)
             Container(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text('Trade name ' + tradeName),
                   Text('Legal Name ' + legalName),
                   Text(
                     'Address: ${address}',
                     maxLines: 2,
-                  )
+                  ),
+                  Text('Category' + category),
                 ],
               ),
             )
@@ -104,6 +110,8 @@ class partyDetail {
   final String adlin1;
   final String street;
   final String location;
+  final String category;
+  final String pincode;
 
   partyDetail(
       {required this.tradename,
@@ -111,5 +119,7 @@ class partyDetail {
       required this.doorno,
       required this.adlin1,
       required this.street,
-      required this.location});
+      required this.location,
+      required this.category,
+      required this.pincode});
 }

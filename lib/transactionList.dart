@@ -14,6 +14,8 @@ class transactionList extends StatefulWidget {
 class _transactionListState extends State<transactionList> {
   late Stream<QuerySnapshot<Map<String, dynamic>>> myStream;
   num outstanding = 0;
+  Color debitColor = Colors.red;
+  Color creditColor = Colors.green;
 
   @override
   void initState() {
@@ -38,9 +40,11 @@ class _transactionListState extends State<transactionList> {
           }
           if (snapshot.data!.docs.isEmpty) {
             print("no data");
-            return Placeholder();
+            return Center(
+              child: Text('Oops! No Transaction found'),
+            );
           }
-          print("hiihidf");
+
           print(snapshot.data!.docs);
           return ListView.builder(
             scrollDirection: Axis.vertical,
@@ -119,16 +123,40 @@ class _transactionListState extends State<transactionList> {
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.circular(7)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                        color: Colors.limeAccent,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text((trans['Amount'].toString())),
-                        Text(DateFormat('dd-MMM-yy ~ HH:mm')
-                            .format(trans['Date'].toDate())
-                            .toString()),
-                        Text(trans['type']),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(DateFormat('dd-MMM-yy ~ HH:mm')
+                                .format(trans['Date'].toDate())
+                                .toString()),
+                            Text('Description : ' + trans['Description']),
+                          ],
+                        ),
+                        if (trans['type'] == 'debit')
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              '-${(trans['Amount'].toString())}',
+                              style: TextStyle(
+                                color: debitColor,
+                              ),
+                            ),
+                          ),
+                        if (trans['type'] == 'credit')
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              '+${(trans['Amount'].toString())}',
+                              style: TextStyle(color: creditColor),
+                            ),
+                          ),
+
                         //Text(widget.docId),
                       ],
                     ),
