@@ -20,6 +20,8 @@ class _gstnSearchState extends State<gstnSearch> {
   late String rcvdgst = "";
   late String address = "";
   late String category = "";
+  late String pincode = "";
+  late bool success = true;
   bool isDetailsAvailable = false;
   bool isbuttonClicked = false;
 
@@ -38,20 +40,25 @@ class _gstnSearchState extends State<gstnSearch> {
         street: data['data']['pradr']['addr']['st'],
         location: data['data']['pradr']['addr']['loc'],
         category: data['data']['ctb'],
-        pincode: data['data']['pradr']['addr']['pncd']);
+        pincode: data['data']['pradr']['addr']['pncd'],
+        success: data['success']);
 
     setState(() {
       isDetailsAvailable = true;
-      tradeName = partyObject.tradename.toString();
-      legalName = partyObject.legalname.toString();
-      address = partyObject.doorno.toString() +
-          ' ' +
-          partyObject.adlin1.toString() +
-          ' ' +
-          partyObject.street.toString() +
-          ' ' +
-          partyObject.location.toString();
-      category = partyObject.category;
+      success = partyObject.success;
+      if (success) {
+        tradeName = partyObject.tradename.toString();
+        legalName = partyObject.legalname.toString();
+        address = partyObject.doorno.toString() +
+            ' ' +
+            partyObject.adlin1.toString() +
+            ' ' +
+            partyObject.street.toString() +
+            ' ' +
+            partyObject.location.toString();
+        category = partyObject.category;
+        pincode = partyObject.pincode;
+      }
     });
     //print(tradeName);
   }
@@ -85,18 +92,52 @@ class _gstnSearchState extends State<gstnSearch> {
           if (isDetailsAvailable)
             Container(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Trade name ' + tradeName),
-                  Text('Legal Name ' + legalName),
-                  Text(
-                    'Address: ${address}',
-                    maxLines: 2,
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.circular(18)),
+                    padding: EdgeInsets.all(8),
+                    margin: EdgeInsets.all(8),
+                    child: Text('Trade name ' + tradeName),
                   ),
-                  Text('Category' + category),
+                  Container(
+                      decoration: BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.circular(18)),
+                      padding: EdgeInsets.all(8),
+                      margin: EdgeInsets.all(8),
+                      child: Text('Legal Name ' + legalName)),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.circular(18)),
+                    padding: EdgeInsets.all(8),
+                    margin: EdgeInsets.all(8),
+                    child: Text(
+                      'Address: ${address}',
+                      maxLines: 2,
+                    ),
+                  ),
+                  Container(
+                      decoration: BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.circular(18)),
+                      padding: EdgeInsets.all(8),
+                      margin: EdgeInsets.all(8),
+                      child: Text('Category ' + category)),
+                  Container(
+                      decoration: BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.circular(18)),
+                      padding: EdgeInsets.all(8),
+                      margin: EdgeInsets.all(8),
+                      child: Text('PinCode ' + pincode))
                 ],
               ),
-            )
+            ),
         ]),
       ),
     );
@@ -112,6 +153,7 @@ class partyDetail {
   final String location;
   final String category;
   final String pincode;
+  final bool success;
 
   partyDetail(
       {required this.tradename,
@@ -121,5 +163,6 @@ class partyDetail {
       required this.street,
       required this.location,
       required this.category,
-      required this.pincode});
+      required this.pincode,
+      required this.success});
 }
