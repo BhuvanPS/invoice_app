@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 
 class addTrans extends StatefulWidget {
   final String id;
@@ -20,6 +23,34 @@ class _addTransState extends State<addTrans> {
   var typeofPayment;
   late String des = '';
 
+  Future sendAlertMail() async {
+    // await GoogleSignIn().signOut();
+    // print("hiiiiii");
+    // return;
+
+    late var user;
+
+    user = await GoogleSignIn(scopes: ['https://mail.google.com/']).signIn();
+
+    // if (user == null) return;
+    final email = user.email;
+    print(email);
+    final auth = await user.authentication;
+    print(email);
+    final token = auth.accessToken;
+    final smtpServer = gmailSaslXoauth2(email, token);
+
+    final message = Message()
+      ..from = Address(email, 'SHARATH AGENCIES')
+      ..recipients = ['psbhuvan2002@gmail.com']
+      ..subject = 'Transaction Alert'
+      ..text = 'test';
+
+    await send(message, smtpServer);
+    print('Sent');
+    //return SnackBar(content: Text('Success'));
+  }
+
   Future<void> uploadingData(
     String amt,
     String id,
@@ -34,6 +65,8 @@ class _addTransState extends State<addTrans> {
         .collection('transactions')
         .doc(value.id)
         .update({'transactionId': value.id}));
+
+    sendAlertMail();
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(

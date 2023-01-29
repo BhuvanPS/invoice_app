@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class addClient extends StatefulWidget {
   const addClient({Key? key}) : super(key: key);
@@ -19,7 +22,10 @@ class _addClientState extends State<addClient> {
 
   TextEditingController nameController = TextEditingController();
   TextEditingController gstnController = TextEditingController();
-  TextEditingController phnoController = TextEditingController();
+  TextEditingController line1Controller = TextEditingController();
+  TextEditingController line2Controller = TextEditingController();
+  TextEditingController pincodeController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   Future<void> uploadingData(
     String _name,
@@ -63,6 +69,37 @@ class _addClientState extends State<addClient> {
     }
   }
 
+  late Map data;
+  late GstDetail partyObject;
+
+  Future fetchGstDetails(String gstn) async {
+    http.Response response = await http.get(Uri.parse(
+        "https://blog-backend.mastersindia.co/api/v1/custom/search/gstin/?keyword=${gstn}&unique_id=lakooAPaMfFDtWwaOfqt5yDaA9tfthfvvfuj4t"));
+    //
+    data = json.decode(response.body);
+    //print(response.body);
+
+    partyObject = GstDetail(
+      tradename: data['data']['tradeNam'],
+      doorno: data['data']['pradr']['addr']['bno'],
+      adlin1: data['data']['pradr']['addr']['bnm'],
+      street: data['data']['pradr']['addr']['st'],
+      location: data['data']['pradr']['addr']['loc'],
+      pincode: data['data']['pradr']['addr']['pncd'],
+    );
+    setState(() {
+      nameController.text = partyObject.tradename.toString();
+
+      line1Controller.text =
+          partyObject.doorno.toString() + ' ' + partyObject.adlin1.toString();
+
+      line2Controller.text =
+          partyObject.street.toString() + ' ' + partyObject.location.toString();
+
+      pincodeController.text = partyObject.pincode;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +132,38 @@ class _addClientState extends State<addClient> {
                       height: 20,
                     ),
                     TextFormField(
+                      textCapitalization: TextCapitalization.characters,
+                      maxLength: 15,
+                      cursorColor: Colors.green,
+                      decoration: InputDecoration(
+                        labelText: 'GST Number',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                          borderSide: BorderSide(),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        if (value!.length == 15) {
+                          fetchGstDetails(value);
+                        }
+                      },
+                      onFieldSubmitted: (value) {},
+                      validator: (value) {
+                        RegExp regex = RegExp(
+                            r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$');
+                        if (value!.length < 15 || !regex.hasMatch(value!)) {
+                          return 'Incorrect';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _gstn = value!;
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
                       controller: nameController,
                       decoration: InputDecoration(
                         labelText: 'Name',
@@ -114,33 +183,6 @@ class _addClientState extends State<addClient> {
                         _name = value!;
                       },
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    TextFormField(
-                      textCapitalization: TextCapitalization.characters,
-                      maxLength: 15,
-                      cursorColor: Colors.green,
-                      decoration: InputDecoration(
-                        labelText: 'GST Number',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide: BorderSide(),
-                        ),
-                      ),
-                      onFieldSubmitted: (value) {},
-                      validator: (value) {
-                        RegExp regex = RegExp(
-                            r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$');
-                        if (value!.length < 15 || !regex.hasMatch(value!)) {
-                          return 'Incorrect';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _gstn = value!;
-                      },
-                    ),
                     Text(
                       '  Address',
                       style: TextStyle(fontSize: 15),
@@ -150,7 +192,8 @@ class _addClientState extends State<addClient> {
                     ),
                     TextFormField(
                       textCapitalization: TextCapitalization.characters,
-                      maxLength: 34,
+                      controller: line1Controller,
+                      maxLength: 38,
                       decoration: InputDecoration(
                         labelText: 'Line 1',
                         border: OutlineInputBorder(
@@ -174,7 +217,8 @@ class _addClientState extends State<addClient> {
                     ),
                     TextFormField(
                       textCapitalization: TextCapitalization.characters,
-                      maxLength: 34,
+                      controller: line2Controller,
+                      maxLength: 38,
                       decoration: InputDecoration(
                         labelText: 'Line 2',
                         border: OutlineInputBorder(
@@ -199,6 +243,7 @@ class _addClientState extends State<addClient> {
                     TextFormField(
                       maxLength: 6,
                       keyboardType: TextInputType.number,
+                      controller: pincodeController,
                       decoration: InputDecoration(
                         labelText: 'Pincode',
                         border: OutlineInputBorder(
@@ -253,4 +298,24 @@ class _addClientState extends State<addClient> {
       ),
     );
   }
+}
+
+class GstDetail {
+  final String tradename;
+
+  final String doorno;
+  final String adlin1;
+  final String street;
+  final String location;
+
+  final String pincode;
+
+  GstDetail({
+    required this.tradename,
+    required this.doorno,
+    required this.adlin1,
+    required this.street,
+    required this.location,
+    required this.pincode,
+  });
 }

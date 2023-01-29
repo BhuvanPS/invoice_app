@@ -40,25 +40,14 @@ class _clientInfoState extends State<clientInfo> {
           margin: EdgeInsets.all(10),
           child: Column(
             children: [
-              Theme(
-                data: ThemeData(
-                    textSelectionTheme: const TextSelectionThemeData(
-                  cursorColor: Colors.yellow,
-                  selectionColor: Colors.green,
-                  selectionHandleColor: Colors.blue,
-                )),
-                child: SelectableText(
-                  widget.name,
-                  toolbarOptions: ToolbarOptions(selectAll: true, copy: true),
-                ),
+              Text(
+                widget.name,
               ),
               SizedBox(
                 height: 5,
               ),
-              SelectableText(
+              Text(
                 widget.gstn,
-                toolbarOptions: ToolbarOptions(selectAll: true, copy: true),
-                cursorColor: Colors.black,
               ),
             ],
           ),
