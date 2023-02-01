@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/intl.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
 
 class addTrans extends StatefulWidget {
   final String id;
-  addTrans({required this.id});
+  final String name;
+  addTrans({required this.id, required this.name});
 
   @override
   State<addTrans> createState() => _addTransState();
@@ -19,11 +21,30 @@ class _addTransState extends State<addTrans> {
   TextEditingController amount = TextEditingController();
   TextEditingController description = TextEditingController();
 
+  TextEditingController dateController = new TextEditingController();
+  TextEditingController timeController = new TextEditingController();
+  DateTime tDate = DateTime.now();
+
   late String amt = '';
   var typeofPayment;
   late String des = '';
 
-  Future sendAlertMail() async {
+  @override
+  void initState() {
+    dateController.text = DateFormat.yMMMMd().format(DateTime.now());
+    timeController.text = DateFormat.jms().format(DateTime(
+        tDate.year,
+        tDate.month,
+        tDate.day,
+        TimeOfDay.now().hour,
+        TimeOfDay.now().minute,
+        0));
+
+    // FirebaseFirestore.instance.collection('clients').snapshots();
+    super.initState();
+  }
+
+  Future sendAlertMail(String content) async {
     // await GoogleSignIn().signOut();
     // print("hiiiiii");
     // return;
@@ -44,7 +65,7 @@ class _addTransState extends State<addTrans> {
       ..from = Address(email, 'SHARATH AGENCIES')
       ..recipients = ['psbhuvan2002@gmail.com']
       ..subject = 'Transaction Alert'
-      ..text = 'test';
+      ..text = content;
 
     await send(message, smtpServer);
     print('Sent');
@@ -59,14 +80,23 @@ class _addTransState extends State<addTrans> {
       'partyId': id,
       'Amount': int.parse(amt),
       'type': typeofPayment,
-      'Date': DateTime.now(),
+      'Date': tDate,
       'Description': des
     }).then((value) => FirebaseFirestore.instance
         .collection('transactions')
         .doc(value.id)
         .update({'transactionId': value.id}));
-
-    sendAlertMail();
+    var content;
+    if (typeofPayment == 'credit') {
+      content =
+          'Payment of INR ${int.parse(amt)} credited to your Account from ${widget.name} at ${DateFormat.yMMMMd().format(tDate) + ' ' + DateFormat.jms().format(tDate)}\n'
+          'Description provided for the transaction ${des}';
+    } else {
+      content =
+          'Products/Invoice with a  value of INR ${int.parse(amt)} has been debited at ${DateFormat.yMMMMd().format(tDate) + ' ' + DateFormat.jms().format(tDate)}\n'
+          'Description provided for the transaction ${des}';
+    }
+    sendAlertMail(content);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -100,6 +130,7 @@ class _addTransState extends State<addTrans> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text('Record'),
         ),
@@ -173,6 +204,65 @@ class _addTransState extends State<addTrans> {
                   onSaved: (value) {
                     des = value!;
                   },
+                ),
+                Container(
+                  //color: Colors.yellow[100],
+                  padding: EdgeInsets.all(15),
+                  margin: EdgeInsets.only(top: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.yellow[100],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: dateController,
+                        decoration: InputDecoration(
+                            icon:
+                                Icon(Icons.calendar_today), //icon of text field
+                            labelText: "Enter Date" //label text of field
+                            ),
+                        readOnly: true,
+                        onTap: () async {
+                          DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2100));
+                          print(pickedDate.toString());
+                          if (pickedDate != null) {
+                            tDate = pickedDate;
+
+                            String formatDate =
+                                DateFormat.yMMMMd().format(pickedDate);
+                            setState(() {
+                              dateController.text = formatDate;
+                            });
+                          }
+                        },
+                      ),
+                      TextFormField(
+                        controller: timeController,
+                        decoration: InputDecoration(
+                            icon: Icon(Icons.timer), //icon of text field
+                            labelText: "Enter Time" //label text of field
+                            ),
+                        readOnly: true,
+                        onTap: () async {
+                          TimeOfDay? pickedTime = await showTimePicker(
+                              context: context, initialTime: TimeOfDay.now());
+                          if (pickedTime != null) {
+                            tDate = DateTime(tDate.year, tDate.month, tDate.day,
+                                pickedTime.hour, pickedTime.minute, 0);
+                            setState(() {
+                              timeController.text =
+                                  DateFormat.jm().format(tDate);
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
                 Center(
                   child: TextButton(

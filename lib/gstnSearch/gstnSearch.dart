@@ -69,76 +69,81 @@ class _gstnSearchState extends State<gstnSearch> {
       appBar: AppBar(
         title: Text('Gst Search'),
       ),
-      body: Container(
-        child: Column(children: [
-          TextField(
-            controller: gstnumber,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              //print(gstnumber.text);
-              getData(gstnumber.text.trim());
-              FocusManager.instance.primaryFocus?.unfocus();
-              setState(() {
-                isbuttonClicked = true;
-              });
-            },
-            child: Text('Search'),
-          ),
-          if (isbuttonClicked & !isDetailsAvailable & gstnumber.text.isNotEmpty)
-            Container(
-              child: CircularProgressIndicator(),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Container(
+          child: Column(children: [
+            TextField(
+              controller: gstnumber,
             ),
-          if (isDetailsAvailable)
-            Container(
-              child: Column(
-                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.black12,
-                        borderRadius: BorderRadius.circular(18)),
-                    padding: EdgeInsets.all(8),
-                    margin: EdgeInsets.all(8),
-                    child: Text('Trade name ' + tradeName),
-                  ),
-                  Container(
-                      decoration: BoxDecoration(
-                          color: Colors.black12,
-                          borderRadius: BorderRadius.circular(18)),
-                      padding: EdgeInsets.all(8),
-                      margin: EdgeInsets.all(8),
-                      child: Text('Legal Name ' + legalName)),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.black12,
-                        borderRadius: BorderRadius.circular(18)),
-                    padding: EdgeInsets.all(8),
-                    margin: EdgeInsets.all(8),
-                    child: Text(
-                      'Address: ${address}',
-                      maxLines: 2,
-                    ),
-                  ),
-                  Container(
-                      decoration: BoxDecoration(
-                          color: Colors.black12,
-                          borderRadius: BorderRadius.circular(18)),
-                      padding: EdgeInsets.all(8),
-                      margin: EdgeInsets.all(8),
-                      child: Text('Category ' + category)),
-                  Container(
-                      decoration: BoxDecoration(
-                          color: Colors.black12,
-                          borderRadius: BorderRadius.circular(18)),
-                      padding: EdgeInsets.all(8),
-                      margin: EdgeInsets.all(8),
-                      child: Text('PinCode ' + pincode))
-                ],
+            ElevatedButton(
+              onPressed: () {
+                //print(gstnumber.text);
+                getData(gstnumber.text.trim());
+                FocusManager.instance.primaryFocus?.unfocus();
+                setState(() {
+                  isbuttonClicked = true;
+                });
+              },
+              child: Text('Search'),
+            ),
+            if (isbuttonClicked &
+                !isDetailsAvailable &
+                gstnumber.text.isNotEmpty)
+              Container(
+                child: CircularProgressIndicator(),
               ),
-            ),
-        ]),
+            if (isDetailsAvailable)
+              Container(
+                child: Column(
+                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.circular(18)),
+                      padding: EdgeInsets.all(8),
+                      margin: EdgeInsets.all(8),
+                      child: Text('Trade name ' + tradeName),
+                    ),
+                    Container(
+                        decoration: BoxDecoration(
+                            color: Colors.black12,
+                            borderRadius: BorderRadius.circular(18)),
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.all(8),
+                        child: Text('Legal Name ' + legalName)),
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.circular(18)),
+                      padding: EdgeInsets.all(8),
+                      margin: EdgeInsets.all(8),
+                      child: Text(
+                        'Address: ${address}',
+                        maxLines: 2,
+                      ),
+                    ),
+                    Container(
+                        decoration: BoxDecoration(
+                            color: Colors.black12,
+                            borderRadius: BorderRadius.circular(18)),
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.all(8),
+                        child: Text('Category ' + category)),
+                    Container(
+                        decoration: BoxDecoration(
+                            color: Colors.black12,
+                            borderRadius: BorderRadius.circular(18)),
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.all(8),
+                        child: Text('PinCode ' + pincode))
+                  ],
+                ),
+              ),
+          ]),
+        ),
       ),
     );
   }

@@ -126,7 +126,7 @@ class _detailedViewState extends State<detailedView> {
       //     },
       //   ),
       // ),
-      body: SingleChildScrollView(
+      body: Container(
         child: FutureBuilder<DocumentSnapshot>(
           future: FirebaseFirestore.instance
               .collection('clients')
@@ -150,7 +150,7 @@ class _detailedViewState extends State<detailedView> {
                   snapshot.data!.data() as Map<String, dynamic>;
               return Center(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text('Outstanding :${total}'),
@@ -192,7 +192,10 @@ class _detailedViewState extends State<detailedView> {
                         onPressed: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (_) {
-                            return addTrans(id: data['docId']);
+                            return addTrans(
+                              id: widget.id.trim(),
+                              name: widget.name,
+                            );
                           }));
                         },
                         child: Text('Record Transaction'))
@@ -202,10 +205,12 @@ class _detailedViewState extends State<detailedView> {
               // return Text("Full Name: ${data['BilledTo']} ${data['Quantity']}");
             }
 
-            return CircularProgressIndicator(
-              backgroundColor: Colors.redAccent,
-              valueColor: AlwaysStoppedAnimation(Colors.green),
-              strokeWidth: 10,
+            return Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.redAccent,
+                valueColor: AlwaysStoppedAnimation(Colors.green),
+                strokeWidth: 10,
+              ),
             );
           },
         ),
