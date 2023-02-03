@@ -58,6 +58,7 @@ dependencies:
   syncfusion_flutter_pdfviewer: ^20.4.48
   firebase_storage: ^11.0.10
   file_picker: ^4.6.1
+  flutter_cached_pdfview: ^0.4.1
 
 
 dev_dependencies:

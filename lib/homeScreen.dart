@@ -3,9 +3,13 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:inventory/initialise.dart';
 import 'package:inventory/proformaInvoice/viewProforma.dart';
 import 'package:inventory/transactions/allTransactions.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 import './gstnSearch/gstnSearch.dart';
 import 'proformaInvoice/getInvDetails.dart';
@@ -34,6 +38,33 @@ class _homeScreenState extends State<homeScreen> {
     String url = await snapshot.ref.getDownloadURL();
     print(url);
     //add the url as parameter
+  }
+
+  late File Pfile;
+  bool isLoading = false;
+  Future<void> loadNetwork() async {
+    setState(() {
+      isLoading = true;
+    });
+    var url =
+        'https://firebasestorage.googleapis.com/v0/b/inventory-25032.appspot.com/o/proformaInvoices%2Fproforma20.pdf?alt=media&token=5b87077e-79a7-4ec0-91be-5f479dab3a88';
+    final response = await http.get(Uri.parse(url));
+
+    final bytes = response.bodyBytes;
+    final filename = 'xyz.pdf';
+    final dir = (await getExternalStorageDirectory())?.path;
+    var file = File('${dir}/$filename');
+
+    await file.writeAsBytes(bytes, flush: true);
+    OpenFile.open('$dir/$filename');
+    setState(() {
+      Pfile = file;
+    });
+
+    print(Pfile);
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -265,6 +296,43 @@ class _homeScreenState extends State<homeScreen> {
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (_) {
                 return allTransactions();
+              }));
+            },
+            child: Container(
+              //padding: const EdgeInsets.all(10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.swap_horiz_rounded),
+                  Text('View Transactions'),
+                ],
+              ),
+              decoration: BoxDecoration(
+                // image: DecorationImage(image: NetworkImage(bgurl)),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.greenAccent.withOpacity(0.7),
+                    Colors.greenAccent,
+                  ],
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                ),
+                borderRadius: BorderRadius.circular(15),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              loadNetwork();
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                // return Container(
+                //   child: CircularProgressIndicator(),
+                // );
+                return isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : Container(
+                        child: Center(),
+                      );
               }));
             },
             child: Container(

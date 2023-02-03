@@ -27,7 +27,7 @@ class _addTransState extends State<addTrans> {
 
   late String amt = '';
   var typeofPayment;
-  late String des = '';
+  late String des = 'NA';
 
   @override
   void initState() {
@@ -55,15 +55,19 @@ class _addTransState extends State<addTrans> {
 
     // if (user == null) return;
     final email = user.email;
-    print(email);
+    // print(email);
     final auth = await user.authentication;
-    print(email);
+    //print(email);
     final token = auth.accessToken;
     final smtpServer = gmailSaslXoauth2(email, token);
 
     final message = Message()
       ..from = Address(email, 'SHARATH AGENCIES')
-      ..recipients = ['psbhuvan2002@gmail.com']
+      ..recipients = [
+        'psbhuvan2002@gmail.com',
+        'prsraja1973@gmail.com',
+        'chitrasubramani1977@gmail.com'
+      ]
       ..subject = 'Transaction Alert'
       ..text = content;
 
@@ -90,14 +94,16 @@ class _addTransState extends State<addTrans> {
     var content;
     if (typeofPayment == 'credit') {
       content =
-          'Payment of INR ${int.parse(amt)} credited to your Account from ${widget.name} at ${DateFormat.yMMMMd().format(tDate) + ' ' + DateFormat.jms().format(tDate)}\n'
-          'Description provided for the transaction ${des}';
+          'Payment of INR ${int.parse(amt)} credited to your Account XXXXXX1735 from ${widget.name} at ${DateFormat.yMMMMd().format(tDate) + ' ' + DateFormat.jms().format(tDate)}\n'
+          'Description provided for the transaction ${des}\n'
+          'Note: The information is provided by one of the user in your organisation,if any discrepancy kindly contact the respective person';
     } else {
       content =
           'Products/Invoice with a  value of INR ${int.parse(amt)} has been debited at ${DateFormat.yMMMMd().format(tDate) + ' ' + DateFormat.jms().format(tDate)}\n'
-          'Description provided for the transaction ${des}';
+          'Description provided for the transaction ${des}\n'
+          'Note: The information is provided by one of the user in your organisation,if any discrepancy kindly contact the respective person';
     }
-    //sendAlertMail(content);
+    sendAlertMail(content);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
