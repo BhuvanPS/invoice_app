@@ -19,11 +19,11 @@ class _initialiseState extends State<initialise> {
       appBar: AppBar(
         title: Text('Clients'),
       ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance
+      body: FutureBuilder(
+        future: FirebaseFirestore.instance
             .collection('clients')
             .orderBy('name')
-            .snapshots(),
+            .get(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return Center(

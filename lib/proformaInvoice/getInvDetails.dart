@@ -2,7 +2,7 @@ import 'package:add_comma/add_comma.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:inventory/pdfgen.dart';
+import 'package:inventory/proformaInvoice/pdfgen.dart';
 
 class getInvDetails extends StatefulWidget {
   const getInvDetails({Key? key}) : super(key: key);

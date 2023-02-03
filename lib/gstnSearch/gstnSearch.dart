@@ -17,7 +17,7 @@ class _gstnSearchState extends State<gstnSearch> {
   late bool SearchStatus = false;
   late String tradeName = "";
   late String legalName = "";
-  late String rcvdgst = "";
+  //late String rcvdgst = "";
   late String address = "";
   late String category = "";
   late String pincode = "";
@@ -72,8 +72,15 @@ class _gstnSearchState extends State<gstnSearch> {
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Container(
+          padding: EdgeInsets.all(8),
           child: Column(children: [
             TextField(
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  icon: Icon(Icons.search),
+                  labelText: 'Enter Gst'),
               controller: gstnumber,
             ),
             ElevatedButton(

@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/services.dart';
-import 'package:inventory/pdfout.dart';
+import 'package:inventory/proformaInvoice/pdfout.dart';
 import 'package:number_to_words/number_to_words.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:vibration/vibration.dart';
@@ -85,7 +85,6 @@ class _pdfgenState extends State<pdfgen> {
           .doc(value.id)
           .update({'docId': value.id});
     });
-    print('ADded');
   }
 
   final putComma = addCommasIndian();
@@ -114,6 +113,8 @@ class _pdfgenState extends State<pdfgen> {
     //Create a new PDF document
     PdfDocument document = PdfDocument();
     document.pageSettings.size = PdfPageSize.a4;
+    //document.pageSettings.margins = PdfMargins();
+    document.pageSettings.setMargins(40, 40, 40, 30);
     final page = document.pages.add();
 
     page.graphics.drawRectangle(
@@ -200,24 +201,30 @@ class _pdfgenState extends State<pdfgen> {
     );
 
     page.graphics.drawString(
-      '1. Please pay within 15 days from the date of invoice, overdue interest @ 24% will be charged on delayed payments.',
+      '1. Please pay within 15 days from the date of invoice, overdue interest @ 24% will be charged on ',
       PdfStandardFont(PdfFontFamily.timesRoman, 12),
       brush: PdfBrushes.black,
       bounds: Rect.fromLTWH(13, 680, 0, 0),
     );
-
     page.graphics.drawString(
-      '2. Please quote proforma invoice number when remitting funds.',
+      '   delayed payments.',
       PdfStandardFont(PdfFontFamily.timesRoman, 12),
       brush: PdfBrushes.black,
       bounds: Rect.fromLTWH(13, 700, 0, 0),
     );
 
     page.graphics.drawString(
+      '2. Please quote proforma invoice number when remitting funds.',
+      PdfStandardFont(PdfFontFamily.timesRoman, 12),
+      brush: PdfBrushes.black,
+      bounds: Rect.fromLTWH(13, 720, 0, 0),
+    );
+
+    page.graphics.drawString(
       'For any enquiry, reach out via email at sharathagencies1977@gmail.com, call on +91 99421 08878',
       PdfStandardFont(PdfFontFamily.timesRoman, 10, style: PdfFontStyle.bold),
       brush: PdfBrushes.black,
-      bounds: Rect.fromLTWH(45, 735, 0, 0),
+      bounds: Rect.fromLTWH(45, 745, 0, 0),
     );
 
     page.graphics.drawString(

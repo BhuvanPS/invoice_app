@@ -15,7 +15,14 @@ class _proformaDetailState extends State<proformaDetail> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Details'),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.print),
+          )
+        ],
       ),
+
       // body: StreamBuilder(
       //   stream: FirebaseFirestore.instance
       //       .collection('proformaInvoices')
@@ -73,17 +80,30 @@ class _proformaDetailState extends State<proformaDetail> {
               //Future.delayed(Duration(seconds: 10));
               Map<String, dynamic> data =
                   snapshot.data!.data() as Map<String, dynamic>;
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(data['BilledTo']),
-                  Text('Inv No : ' + data['invno'].toString()),
-                  Text(data['product']),
-                  Text(data['hsn']),
-                  Text(data['Quantity'] + ' Kgs'),
-                  Text('Rs ' + data['Rate'] + '/kg'),
-                  Text('Bill Amount : ' + data['TotalAmount'].toString()),
-                ],
+              return Container(
+                margin: EdgeInsets.all(8),
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.yellow[100],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Client Name : ' + data['BilledTo'],
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    Text('Invoice No : ' + data['invno'].toString()),
+                    Text('Product : ' + data['product']),
+                    Text('Hsn Code : ' + data['hsn']),
+                    Text('Quantity : ' + data['Quantity'] + ' Kgs'),
+                    Text('Rate : Rs ' + data['Rate'] + '/kg'),
+                    Text(data['Amount'].toString()),
+                    Text('Bill Amount : ' + data['TotalAmount'].toString()),
+                  ],
+                ),
               );
               // return Text("Full Name: ${data['BilledTo']} ${data['Quantity']}");
             }

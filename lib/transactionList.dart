@@ -45,7 +45,7 @@ class _transactionListState extends State<transactionList> {
             );
           }
 
-          print(snapshot.data!.docs);
+          //print(snapshot.data!.docs);
           return ListView.builder(
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
@@ -122,8 +122,21 @@ class _transactionListState extends State<transactionList> {
                             ));
                   },
                   child: Container(
+                    padding: EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                        color: Colors.limeAccent,
+                        gradient: LinearGradient(
+                          colors: trans['type'] == 'credit'
+                              ? [
+                                  Colors.greenAccent.withOpacity(0.2),
+                                  Colors.greenAccent,
+                                ]
+                              : [
+                                  Colors.redAccent.withOpacity(0.2),
+                                  Colors.redAccent,
+                                ],
+                          begin: Alignment.topRight,
+                          end: Alignment.bottomLeft,
+                        ),
                         borderRadius: BorderRadius.circular(10)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -165,8 +178,6 @@ class _transactionListState extends State<transactionList> {
               );
             },
           );
-
-          ;
         },
       ),
     );

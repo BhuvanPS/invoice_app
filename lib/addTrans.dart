@@ -81,7 +81,8 @@ class _addTransState extends State<addTrans> {
       'Amount': int.parse(amt),
       'type': typeofPayment,
       'Date': tDate,
-      'Description': des
+      'Description': des,
+      'partyName': widget.name
     }).then((value) => FirebaseFirestore.instance
         .collection('transactions')
         .doc(value.id)
@@ -96,7 +97,7 @@ class _addTransState extends State<addTrans> {
           'Products/Invoice with a  value of INR ${int.parse(amt)} has been debited at ${DateFormat.yMMMMd().format(tDate) + ' ' + DateFormat.jms().format(tDate)}\n'
           'Description provided for the transaction ${des}';
     }
-    sendAlertMail(content);
+    //sendAlertMail(content);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(

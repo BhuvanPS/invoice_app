@@ -55,6 +55,9 @@ dependencies:
   whatsapp_unilink: ^2.1.0
   mailer: ^6.0.0
   google_sign_in: ^5.4.4
+  syncfusion_flutter_pdfviewer: ^20.4.48
+  firebase_storage: ^11.0.10
+  file_picker: ^4.6.1
 
 
 dev_dependencies:

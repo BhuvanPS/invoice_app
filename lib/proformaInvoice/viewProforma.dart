@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:inventory/proinfo.dart';
+import 'package:inventory/proformaInvoice/proinfo.dart';
 
 class viewProforma extends StatefulWidget {
   const viewProforma({Key? key}) : super(key: key);

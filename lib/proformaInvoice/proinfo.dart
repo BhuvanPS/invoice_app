@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:inventory/proformaDetail.dart';
+import 'package:inventory/proformaInvoice/proformaDetail.dart';
 
 class proinfo extends StatefulWidget {
   late int invno;
@@ -68,15 +68,22 @@ class _proinfoState extends State<proinfo> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.green,
+          gradient: LinearGradient(
+            colors: [
+              Colors.lightBlue.withOpacity(0.5),
+              Colors.blueAccent,
+            ],
+            begin: Alignment.bottomLeft,
+            end: Alignment.topLeft,
+          ),
           borderRadius: BorderRadius.circular(8),
         ),
         //color: Colors.blueGrey,
-        padding: EdgeInsets.fromLTRB(0, 5, 0, 8),
-        margin: EdgeInsets.all(10),
+        padding: EdgeInsets.fromLTRB(5, 5, 0, 8),
+        margin: EdgeInsets.all(9),
         child: Row(
           children: [
-            Icon(Icons.request_page_sharp),
+            Icon(Icons.document_scanner_outlined),
             SizedBox(
               width: 5,
             ),
