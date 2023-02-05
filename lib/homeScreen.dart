@@ -3,13 +3,10 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:inventory/ewayBillDisplay.dart';
 import 'package:inventory/initialise.dart';
 import 'package:inventory/proformaInvoice/viewProforma.dart';
 import 'package:inventory/transactions/allTransactions.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 
 import './gstnSearch/gstnSearch.dart';
 import 'proformaInvoice/getInvDetails.dart';
@@ -28,7 +25,9 @@ class _homeScreenState extends State<homeScreen> {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     File pick = File(result!.files.single.path.toString());
     var file = pick.readAsBytesSync();
-    String name = 'proforma20';
+
+    String name = result.files.single.name;
+    var ext = result.files.single.extension;
     var pdfFile = FirebaseStorage.instance
         .ref()
         .child('proformaInvoices')
@@ -38,33 +37,6 @@ class _homeScreenState extends State<homeScreen> {
     String url = await snapshot.ref.getDownloadURL();
     print(url);
     //add the url as parameter
-  }
-
-  late File Pfile;
-  bool isLoading = false;
-  Future<void> loadNetwork() async {
-    setState(() {
-      isLoading = true;
-    });
-    var url =
-        'https://firebasestorage.googleapis.com/v0/b/inventory-25032.appspot.com/o/proformaInvoices%2Fproforma20.pdf?alt=media&token=5b87077e-79a7-4ec0-91be-5f479dab3a88';
-    final response = await http.get(Uri.parse(url));
-
-    final bytes = response.bodyBytes;
-    final filename = 'xyz.pdf';
-    final dir = (await getExternalStorageDirectory())?.path;
-    var file = File('${dir}/$filename');
-
-    await file.writeAsBytes(bytes, flush: true);
-    OpenFile.open('$dir/$filename');
-    setState(() {
-      Pfile = file;
-    });
-
-    print(Pfile);
-    setState(() {
-      isLoading = false;
-    });
   }
 
   @override
@@ -90,6 +62,11 @@ class _homeScreenState extends State<homeScreen> {
           children: [
             const DrawerHeader(
               child: Text('Sharath Agencies'),
+              // decoration: BoxDecoration(
+              //     image: DecorationImage(
+              //         image: NetworkImage(
+              //             'https://firebasestorage.googleapis.com/v0/b/inventory-25032.appspot.com/o/rvf.jpg?alt=media&token=8a925492-802d-4b89-a627-2e12710c60e7'),
+              //         fit: BoxFit.fill)),
             ),
             ListTile(
               title: Text('Clients'),
@@ -132,35 +109,7 @@ class _homeScreenState extends State<homeScreen> {
           ],
         ),
       ),
-      // body: Center(
-      //   child: Column(
-      //     children: [
-      //       ElevatedButton(
-      //         child: Text('View All Proforma'),
-      //         onPressed: () {
-      //           Vibration.vibrate(duration: 200);
-      //           Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-      //             return viewProforma();
-      //           }));
-      //         },
-      //       ),
-      //       ElevatedButton(
-      //           onPressed: () {
-      //             Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-      //               return gstnSearch();
-      //             }));
-      //           },
-      //           child: Text('Search Gstn')),
-      //       // ElevatedButton(
-      //       //     onPressed: () {
-      //       //       Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-      //       //         return kcbill();
-      //       //       }));
-      //       //     },
-      //       //     child: Text('KC'))
-      //     ],
-      //   ),
-      // ),
+
       body: GridView(
         padding: EdgeInsets.all(8),
         physics: BouncingScrollPhysics(),
@@ -192,8 +141,39 @@ class _homeScreenState extends State<homeScreen> {
                 // image: DecorationImage(image: NetworkImage(bgurl)),
                 gradient: LinearGradient(
                   colors: [
-                    Colors.purple.withOpacity(0.7),
-                    Colors.purple,
+                    Colors.pinkAccent.withOpacity(0.7),
+                    Colors.purpleAccent,
+                  ],
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                ),
+                borderRadius: BorderRadius.circular(15),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                return ewayBillDisplay(
+                  path: 'taxInvoices/',
+                );
+              }));
+            },
+            child: Container(
+              //padding: const EdgeInsets.all(10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.book),
+                  Text('View Tax Invoices'),
+                ],
+              ),
+              decoration: BoxDecoration(
+                // image: DecorationImage(image: NetworkImage(bgurl)),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.lightBlue.withOpacity(0.7),
+                    Colors.greenAccent,
                   ],
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
@@ -311,7 +291,7 @@ class _homeScreenState extends State<homeScreen> {
                 // image: DecorationImage(image: NetworkImage(bgurl)),
                 gradient: LinearGradient(
                   colors: [
-                    Colors.greenAccent.withOpacity(0.7),
+                    Colors.green.withOpacity(0.7),
                     Colors.greenAccent,
                   ],
                   begin: Alignment.topRight,
@@ -323,16 +303,10 @@ class _homeScreenState extends State<homeScreen> {
           ),
           GestureDetector(
             onTap: () {
-              loadNetwork();
               Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                // return Container(
-                //   child: CircularProgressIndicator(),
-                // );
-                return isLoading
-                    ? Center(child: CircularProgressIndicator())
-                    : Container(
-                        child: Center(),
-                      );
+                return ewayBillDisplay(
+                  path: 'ewayBills/',
+                );
               }));
             },
             child: Container(
@@ -340,15 +314,15 @@ class _homeScreenState extends State<homeScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.swap_horiz_rounded),
-                  Text('View Transactions'),
+                  Icon(Icons.fire_truck),
+                  Text('View Eway Bills'),
                 ],
               ),
               decoration: BoxDecoration(
                 // image: DecorationImage(image: NetworkImage(bgurl)),
                 gradient: LinearGradient(
                   colors: [
-                    Colors.greenAccent.withOpacity(0.7),
+                    Colors.limeAccent.withOpacity(0.7),
                     Colors.greenAccent,
                   ],
                   begin: Alignment.topRight,
@@ -358,6 +332,7 @@ class _homeScreenState extends State<homeScreen> {
               ),
             ),
           ),
+
           // GestureDetector(
           //   onTap: () {
           //     Navigator.of(context).push(MaterialPageRoute(builder: (_) {
@@ -385,7 +360,7 @@ class _homeScreenState extends State<homeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          uploadFile();
+          //uploadFile();
         },
         child: Icon(Icons.add),
       ),

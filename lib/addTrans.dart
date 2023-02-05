@@ -66,7 +66,6 @@ class _addTransState extends State<addTrans> {
       ..recipients = [
         'psbhuvan2002@gmail.com',
         'prsraja1973@gmail.com',
-        'chitrasubramani1977@gmail.com'
       ]
       ..subject = 'Transaction Alert'
       ..text = content;
