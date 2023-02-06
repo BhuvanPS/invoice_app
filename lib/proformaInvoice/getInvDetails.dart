@@ -251,7 +251,10 @@ class _getInvDetailsState extends State<getInvDetails> {
                         } else {
                           quantity = val;
                         }
-                        Amount = int.parse(price) * int.parse(quantity);
+                        Amount = double.parse(
+                                (double.parse(price) * double.parse(quantity))
+                                    .toString())
+                            .round();
                       });
                     },
                   ),
@@ -266,7 +269,11 @@ class _getInvDetailsState extends State<getInvDetails> {
                         } else {
                           price = val;
                         }
-                        Amount = int.parse(price) * int.parse(quantity);
+                        Amount = double.parse(
+                                (double.parse(price) * double.parse(quantity))
+                                    .toString())
+                            .round();
+                        print(Amount.toString());
                       });
                       // Amount = int.parse(price) * int.parse(quantity);
                     },
@@ -276,14 +283,14 @@ class _getInvDetailsState extends State<getInvDetails> {
                   ),
 
                   Text(
-                    (putComma(Amount)).toString(),
+                    Amount.toString(),
                     style: TextStyle(fontSize: 25),
                   ),
 
                   Center(
                     child: TextButton(
                       onPressed: () {
-                        Amount = int.parse(price) * int.parse(quantity);
+                        //Amount = int.parse(price) * int.parse(quantity);
                         //print(putcomma(Amount));
                         Navigator.of(context).push(
                           MaterialPageRoute(
