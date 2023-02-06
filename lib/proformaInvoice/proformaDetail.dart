@@ -22,42 +22,6 @@ class _proformaDetailState extends State<proformaDetail> {
           )
         ],
       ),
-
-      // body: StreamBuilder(
-      //   stream: FirebaseFirestore.instance
-      //       .collection('proformaInvoices')
-      //       .where('invno', isEqualTo: widget.invno)
-      //       .snapshots(),
-      //   builder: (BuildContext context,
-      //       AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-      //     if (!snapshot.hasData) {
-      //       return const Center(
-      //         child: CircularProgressIndicator(),
-      //       );
-      //     } else {
-      //       return ListView.builder(
-      //         //itemCount: snapshot.data!.docs.length,
-      //         itemCount: 1,
-      //         itemBuilder: (context, index) {
-      //           DocumentSnapshot prInvoice = snapshot.data!.docs[index];
-      //           return Container(
-      //             child: Column(
-      //               children: [
-      //                 Text('INV NO :' + prInvoice['invno'].toString()),
-      //                 Text(prInvoice['BilledTo']),
-      //                 Text(prInvoice['Quantity']),
-      //                 Text(prInvoice['Rate']),
-      //                 Text(prInvoice['TotalAmount'].toString()),
-      //                 Text(prInvoice['product']),
-      //               ],
-      //             ),
-      //           );
-      //         },
-      //       );
-      //     }
-      //     ;
-      //   },
-      // ),
       body: Center(
         child: FutureBuilder<DocumentSnapshot>(
           future: FirebaseFirestore.instance
@@ -80,28 +44,115 @@ class _proformaDetailState extends State<proformaDetail> {
               //Future.delayed(Duration(seconds: 10));
               Map<String, dynamic> data =
                   snapshot.data!.data() as Map<String, dynamic>;
-              return Container(
-                margin: EdgeInsets.all(8),
-                padding: EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Colors.yellow[100],
-                  borderRadius: BorderRadius.circular(12),
-                ),
+              return SingleChildScrollView(
+                scrollDirection: Axis.vertical,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      'Client Name : ' + data['BilledTo'],
-                      style: TextStyle(fontSize: 20),
+                    Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.yellow[100],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.all(15),
+                        child: Text(
+                          'Client Name : ' + data['BilledTo'],
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
                     ),
-                    Text('Invoice No : ' + data['invno'].toString()),
-                    Text('Product : ' + data['product']),
-                    Text('Hsn Code : ' + data['hsn']),
-                    Text('Quantity : ' + data['Quantity'] + ' Kgs'),
-                    Text('Rate : Rs ' + data['Rate'] + '/kg'),
-                    Text(data['Amount'].toString()),
-                    Text('Bill Amount : ' + data['TotalAmount'].toString()),
+                    Center(
+                      child: Column(
+                        //crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                                'Invoice No : ' + data['invno'].toString(),
+                                style: TextStyle(fontSize: 20)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              'Product : ' + data['product'],
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              'Hsn Code : ' + data['hsn'],
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              'Quantity : ' +
+                                  data['Quantity'].toString() +
+                                  ' Kgs',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              'Rate : ₹ ' + data['Rate'].toString() + '/kg',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              'Ex-mill : ₹ ' + data['Amount'].toString(),
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              'SGST : ₹ ${data['SGST']}',
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              'CGST : ₹ ${data['SGST']}',
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              'Total Gst : ₹ ${data['SGST'] * 2}',
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(width: 2),
+                                ),
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Bill Amount :  ₹ ' +
+                                      data['TotalAmount'].toString(),
+                                  style: TextStyle(fontSize: 21),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               );
