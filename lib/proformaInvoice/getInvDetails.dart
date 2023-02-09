@@ -3,9 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:inventory/proformaInvoice/pdfgen.dart';
+import 'package:vibration/vibration.dart';
 
 class getInvDetails extends StatefulWidget {
-  const getInvDetails({Key? key}) : super(key: key);
+  final num invNo;
+  const getInvDetails({required this.invNo});
 
   @override
   State<getInvDetails> createState() => _getInvDetailsState();
@@ -39,7 +41,7 @@ class _getInvDetailsState extends State<getInvDetails> {
   @override
   void initState() {
     Amount = 0;
-
+    invno.text = (widget.invNo + 1).toString();
     dateInput.text = DateFormat.yMMMMd().format(DateTime.now());
     dueDateInput.text = DateFormat.yMMMMd().format(DateTime.now());
 
@@ -67,38 +69,51 @@ class _getInvDetailsState extends State<getInvDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text('Create Proforma'),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Enter Details',
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 5, bottom: 5),
+            //   child: Text(
+            //     'Enter Details',
+            //     style: TextStyle(fontSize: 20),
+            //   ),
+            // ),
             Form(
                 child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(18.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextFormField(
                     keyboardType: TextInputType.number,
                     controller: invno,
-                    decoration: InputDecoration(labelText: 'Inv No'),
+                    decoration: InputDecoration(
+                      labelText: 'Inv No',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                  Text('Last Proforma No : ${widget.invNo}'),
+                  SizedBox(
+                    height: 12,
                   ),
                   TextFormField(
                     controller: dateInput,
                     //editing controller of this TextField
                     decoration: InputDecoration(
-                        icon: Icon(Icons.calendar_today), //icon of text field
-                        labelText: "Enter Date" //label text of field
-                        ),
+                      icon: Icon(Icons.calendar_today), //icon of text field
+                      labelText: "Enter Date",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ), //label text of field
+                    ),
                     readOnly: true,
                     onTap: () async {
                       DateTime? pickedDate = await showDatePicker(
@@ -116,13 +131,19 @@ class _getInvDetailsState extends State<getInvDetails> {
                       }
                     },
                   ),
+                  SizedBox(
+                    height: 12,
+                  ),
                   TextFormField(
                     controller: dueDateInput,
                     //editing controller of this TextField
                     decoration: InputDecoration(
-                        icon: Icon(Icons.calendar_today), //icon of text field
-                        labelText: "Enter Due Date" //label text of field
-                        ),
+                      icon: Icon(Icons.calendar_today), //icon of text field
+                      labelText: "Enter Due Date",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ), //label text of field
+                    ),
                     readOnly: true,
                     onTap: () async {
                       DateTime? pickedDate = await showDatePicker(
@@ -153,9 +174,15 @@ class _getInvDetailsState extends State<getInvDetails> {
                   StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('clients')
+                        .orderBy('name')
                         .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
                       if (!snapshot.hasData) {
                         return Center(
                           child: CircularProgressIndicator(),
@@ -175,9 +202,10 @@ class _getInvDetailsState extends State<getInvDetails> {
                           );
                         }
                         return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               DropdownButton(
+                                borderRadius: BorderRadius.circular(18),
                                 alignment: AlignmentDirectional.center,
                                 menuMaxHeight: 300,
                                 items: parties,
@@ -200,12 +228,16 @@ class _getInvDetailsState extends State<getInvDetails> {
                     decoration: InputDecoration(
                       labelText: 'Item Name',
                       hintText: 'Enter Product Detail',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       DropdownButton(
+                        borderRadius: BorderRadius.circular(18),
                         value: hsncode,
                         items: hsncodes.map((e) {
                           return DropdownMenuItem(value: e, child: Text(e));
@@ -222,6 +254,7 @@ class _getInvDetailsState extends State<getInvDetails> {
                         hint: Text(' Choose HSN'),
                       ),
                       DropdownButton(
+                        borderRadius: BorderRadius.circular(18),
                         value: gstRate,
                         items: gstrates.map((e) {
                           return DropdownMenuItem(
@@ -241,9 +274,15 @@ class _getInvDetailsState extends State<getInvDetails> {
                   //   height: 10,
                   // ),
                   TextFormField(
+                    scrollPadding: EdgeInsets.only(bottom: 130),
                     keyboardType: TextInputType.number,
                     controller: qty,
-                    decoration: InputDecoration(labelText: 'Qty'),
+                    decoration: InputDecoration(
+                      labelText: 'Qty',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                     onChanged: (val) {
                       setState(() {
                         if (val.isEmpty) {
@@ -258,10 +297,19 @@ class _getInvDetailsState extends State<getInvDetails> {
                       });
                     },
                   ),
+                  SizedBox(
+                    height: 5,
+                  ),
                   TextFormField(
+                    scrollPadding: EdgeInsets.only(bottom: 110),
                     keyboardType: TextInputType.number,
                     controller: rate,
-                    decoration: InputDecoration(labelText: 'Rate'),
+                    decoration: InputDecoration(
+                      labelText: 'Rate',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                     onChanged: (val) {
                       setState(() {
                         if (val.isEmpty) {
@@ -288,10 +336,11 @@ class _getInvDetailsState extends State<getInvDetails> {
                   ),
 
                   Center(
-                    child: TextButton(
+                    child: ElevatedButton(
                       onPressed: () {
                         //Amount = int.parse(price) * int.parse(quantity);
                         //print(putcomma(Amount));
+                        Vibration.vibrate(duration: 100, amplitude: 2);
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) {
@@ -317,7 +366,7 @@ class _getInvDetailsState extends State<getInvDetails> {
                           ),
                         );
                       },
-                      child: Text('Proceed'),
+                      child: Text('Create'),
                     ),
                   ),
                 ],

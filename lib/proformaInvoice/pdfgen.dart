@@ -88,7 +88,7 @@ class _pdfgenState extends State<pdfgen> {
   }
 
   final putComma = addCommasIndian();
-  Future<void> _createPDF(
+  Future<void> createPDF(
       String invno,
       String gstn,
       String partyline1,
@@ -585,7 +585,7 @@ class _pdfgenState extends State<pdfgen> {
         body: Column(
           children: [
             Text(widget.amt),
-            Text('GST' +
+            Text('GST : ' +
                 ((int.parse(widget.Acamount)) *
                         (double.parse(widget.gstr)) /
                         100)
@@ -599,7 +599,7 @@ class _pdfgenState extends State<pdfgen> {
             Center(
                 child: TextButton(
                     onPressed: () {
-                      _createPDF(
+                      createPDF(
                           widget.invno,
                           widget.gstn,
                           widget.line1,
@@ -621,7 +621,7 @@ class _pdfgenState extends State<pdfgen> {
               child: TextButton(
                 onPressed: () async {
                   if (saveCount == 0) {
-                    uploadingData(
+                    await uploadingData(
                       widget.invno,
                       widget.invDate,
                       widget.dueDate,

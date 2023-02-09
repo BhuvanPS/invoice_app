@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -62,11 +63,6 @@ class _homeScreenState extends State<homeScreen> {
           children: [
             const DrawerHeader(
               child: Text('Sharath Agencies'),
-              // decoration: BoxDecoration(
-              //     image: DecorationImage(
-              //         image: NetworkImage(
-              //             'https://firebasestorage.googleapis.com/v0/b/inventory-25032.appspot.com/o/rvf.jpg?alt=media&token=8a925492-802d-4b89-a627-2e12710c60e7'),
-              //         fit: BoxFit.fill)),
             ),
             ListTile(
               title: Text('Clients'),
@@ -82,20 +78,20 @@ class _homeScreenState extends State<homeScreen> {
                 //
               },
             ),
-            ListTile(
-              title: Text('Add Proforma Invoice'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) {
-                      return getInvDetails();
-                    },
-                  ),
-                );
-                //
-              },
-            ),
+            // ListTile(
+            //   title: Text('Add Proforma Invoice'),
+            //   onTap: () {
+            //     Navigator.pop(context);
+            //     Navigator.of(context).push(
+            //       MaterialPageRoute(
+            //         builder: (_) {
+            //           return getInvDetails();
+            //         },
+            //       ),
+            //     );
+            //     //
+            //   },
+            // ),
             Expanded(
                 child: Align(
               alignment: Alignment.bottomLeft,
@@ -138,7 +134,6 @@ class _homeScreenState extends State<homeScreen> {
                 ),
               ),
               decoration: BoxDecoration(
-                // image: DecorationImage(image: NetworkImage(bgurl)),
                 gradient: LinearGradient(
                   colors: [
                     Colors.pinkAccent.withOpacity(0.7),
@@ -183,9 +178,19 @@ class _homeScreenState extends State<homeScreen> {
             ),
           ),
           GestureDetector(
-            onTap: () {
+            onTap: () async {
+              QuerySnapshot querySnap = await FirebaseFirestore.instance
+                  .collection('proformaInvoices')
+                  .orderBy('invno', descending: true)
+                  .limit(1)
+                  .get();
+
+              Map<String, dynamic> data =
+                  querySnap.docs.first.data() as Map<String, dynamic>;
               Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                return getInvDetails();
+                return getInvDetails(
+                  invNo: data['invno'],
+                );
               }));
             },
             child: Container(
