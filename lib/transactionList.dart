@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:inventory/Authentication.dart';
+import 'package:inventory/transactions/TransactionClass.dart';
 
 class transactionList extends StatefulWidget {
   final String docId;
@@ -16,9 +17,11 @@ class _transactionListState extends State<transactionList> {
   num outstanding = 0;
   Color debitColor = Colors.red;
   Color creditColor = Colors.green;
+  List<TransactionClass> transactions = [];
 
   @override
   void initState() {
+    // generatelist();
     myStream = FirebaseFirestore.instance
         .collection('transactions')
         .where('partyId', isEqualTo: widget.docId.trim())
@@ -26,6 +29,11 @@ class _transactionListState extends State<transactionList> {
         .snapshots();
     super.initState();
   }
+
+  // void generatelist() async{
+  //   await TransactionClass.getTransaction(widget.docId.trim());
+  //   transactions = TransactionClass.transactions;
+  // }
 
   @override
   Widget build(BuildContext context) {

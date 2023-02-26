@@ -34,14 +34,16 @@ class _clientInfoState extends State<clientInfo> {
         elevation: 5,
         child: Container(
           decoration: BoxDecoration(
-              color: Colors.blueGrey, borderRadius: BorderRadius.circular(18)),
+              color: Colors.blueAccent,
+              borderRadius: BorderRadius.circular(18)),
           //color: Colors.pink,
-          padding: EdgeInsets.fromLTRB(0, 5, 0, 8),
-          margin: EdgeInsets.all(10),
+          padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
+          margin: EdgeInsets.all(7),
           child: Column(
             children: [
               Text(
                 widget.name,
+                style: TextStyle(fontSize: 16),
               ),
               SizedBox(
                 height: 5,

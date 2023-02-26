@@ -178,11 +178,7 @@ class _getInvDetailsState extends State<getInvDetails> {
                         .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
+
                       if (!snapshot.hasData) {
                         return Center(
                           child: CircularProgressIndicator(),
@@ -223,6 +219,7 @@ class _getInvDetailsState extends State<getInvDetails> {
                       }
                     },
                   ),
+                  SizedBox(height:8),
                   TextFormField(
                     controller: product,
                     decoration: InputDecoration(

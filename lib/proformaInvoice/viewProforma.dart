@@ -9,9 +9,11 @@ class viewProforma extends StatefulWidget {
 
 class _viewProformaState extends State<viewProforma> {
   late ProformaInvoices proformaInvoices;
+  late GlobalKey<ScaffoldState> _scaffoldKey;
   ScrollController controller = ScrollController();
   @override
   void initState() {
+    _scaffoldKey = GlobalKey();
     super.initState();
     proformaInvoices = ProformaInvoices();
     proformaInvoices.fetchFirstList();
@@ -21,15 +23,23 @@ class _viewProformaState extends State<viewProforma> {
   void _scrollListener() {
     if (controller.offset >= controller.position.maxScrollExtent &&
         !controller.position.outOfRange) {
-      proformaInvoices.fetchNextMovies();
+      proformaInvoices.fetchNextDocuments();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF202020),
       appBar: AppBar(
-        title: Text('Proforma Invoices'),
+        leading: const BackButton(
+          color: Colors.white,
+        ),
+        title: Text(
+          'Proforma Invoices',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Color(0xFF202020),
       ),
       body: StreamBuilder(
         stream: proformaInvoices.proformaStream,
@@ -49,6 +59,16 @@ class _viewProformaState extends State<viewProforma> {
                 invno: snapshot.data![index]['invno'],
                 partyname: snapshot.data![index]['BilledTo'],
                 docId: snapshot.data![index]['docId'],
+                product: snapshot.data![index]['product'],
+                invDate: snapshot.data![index]['invDate'],
+                dueDate: snapshot.data![index]['dueDate'],
+                hsn: snapshot.data![index]['hsn'],
+                qty: snapshot.data![index]['Quantity'],
+                rate: snapshot.data![index]['Rate'],
+                exmill: snapshot.data![index]['Amount'],
+                sgst: snapshot.data![index]['SGST'],
+                cgst: snapshot.data![index]['CGST'],
+                total: snapshot.data![index]['TotalAmount'],
               );
             },
           );

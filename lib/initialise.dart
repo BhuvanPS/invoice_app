@@ -17,6 +17,28 @@ class _initialiseState extends State<initialise> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          Center(
+            child: Padding(
+              padding: EdgeInsets.only(right: 15),
+              child: GestureDetector(
+                child: Text(
+                  ' + Add Client',
+                  style: TextStyle(color: Colors.blue, fontSize: 15),
+                ),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) {
+                        return addClient();
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
         title: Text('Clients'),
       ),
       body: FutureBuilder(
@@ -41,18 +63,19 @@ class _initialiseState extends State<initialise> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) {
-                return addClient();
-              },
-            ),
-          );
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Colors.blueAccent,
+      //   child: Icon(Icons.add),
+      //   onPressed: () {
+      //     Navigator.of(context).push(
+      //       MaterialPageRoute(
+      //         builder: (_) {
+      //           return addClient();
+      //         },
+      //       ),
+      //     );
+      //   },
+      // ),
     );
   }
 }

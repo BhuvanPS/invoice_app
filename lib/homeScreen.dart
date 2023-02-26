@@ -32,7 +32,7 @@ class _homeScreenState extends State<homeScreen> {
     var pdfFile = FirebaseStorage.instance
         .ref()
         .child('proformaInvoices')
-        .child('${name}.pdf');
+        .child('${name + '.' + ext!}');
     UploadTask task = pdfFile.putData(file);
     TaskSnapshot snapshot = await task;
     String url = await snapshot.ref.getDownloadURL();
@@ -46,66 +46,6 @@ class _homeScreenState extends State<homeScreen> {
       appBar: AppBar(
         title: Text('Sharath Agencies'),
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: selectedIndex,
-      //   onTap: (x) {
-      //     setState(() {
-      //       selectedIndex = x;
-      //     });
-      //   },
-      //   items: [
-      //     BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-      //     BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search')
-      //   ],
-      // ),
-      drawer: Drawer(
-        child: Column(
-          children: [
-            const DrawerHeader(
-              child: Text('Sharath Agencies'),
-            ),
-            ListTile(
-              title: Text('Clients'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) {
-                      return initialise();
-                    },
-                  ),
-                );
-                //
-              },
-            ),
-            // ListTile(
-            //   title: Text('Add Proforma Invoice'),
-            //   onTap: () {
-            //     Navigator.pop(context);
-            //     Navigator.of(context).push(
-            //       MaterialPageRoute(
-            //         builder: (_) {
-            //           return getInvDetails();
-            //         },
-            //       ),
-            //     );
-            //     //
-            //   },
-            // ),
-            Expanded(
-                child: Align(
-              alignment: Alignment.bottomLeft,
-              child: ListTile(
-                onTap: () {
-                  showDialog(context: context, builder: (ctx) => AlertDialog());
-                },
-                title: Text('About Us'),
-              ),
-            ))
-          ],
-        ),
-      ),
-
       body: GridView(
         padding: EdgeInsets.all(8),
         physics: BouncingScrollPhysics(),
@@ -337,37 +277,7 @@ class _homeScreenState extends State<homeScreen> {
               ),
             ),
           ),
-
-          // GestureDetector(
-          //   onTap: () {
-          //     Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-          //       return kcbill();
-          //     }));
-          //   },
-          //   child: Container(
-          //     padding: const EdgeInsets.all(10),
-          //     child: Text('Kc'),
-          //     decoration: BoxDecoration(
-          //       // image: DecorationImage(image: NetworkImage(bgurl)),
-          //       gradient: LinearGradient(
-          //         colors: [
-          //           Colors.orange.withOpacity(0.7),
-          //           Colors.orange,
-          //         ],
-          //         begin: Alignment.topRight,
-          //         end: Alignment.bottomLeft,
-          //       ),
-          //       borderRadius: BorderRadius.circular(15),
-          //     ),
-          //   ),
-          // ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //uploadFile();
-        },
-        child: Icon(Icons.add),
       ),
     );
   }

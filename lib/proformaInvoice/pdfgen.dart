@@ -71,8 +71,8 @@ class _pdfgenState extends State<pdfgen> {
       'dueDate': dueDate,
       'BilledTo': partyname,
       'gstn': gstn,
-      'Quantity': qty,
-      'Rate': rate,
+      'Quantity': double.parse(qty),
+      'Rate': double.parse(rate),
       'Amount': getAmt,
       'SGST': gstAmt,
       'CGST': gstAmt,
@@ -87,7 +87,6 @@ class _pdfgenState extends State<pdfgen> {
     });
   }
 
-  final putComma = addCommasIndian();
   Future<void> createPDF(
       String invno,
       String gstn,
@@ -104,6 +103,7 @@ class _pdfgenState extends State<pdfgen> {
       String rate,
       String amount,
       String Acamount) async {
+    final putComma = addCommasIndian();
     double getAmt = double.parse(Acamount);
     int gstAmt = (((double.parse(gstr)) / 200) * getAmt).round();
     int totalamt = getAmt.round() + (gstAmt * 2).round();
