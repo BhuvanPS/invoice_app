@@ -50,82 +50,6 @@ class _detailedViewState extends State<detailedView> {
       appBar: AppBar(
         title: Text(widget.name),
       ),
-      // body: SingleChildScrollView(
-      //   child: StreamBuilder(
-      //     stream: FirebaseFirestore.instance
-      //         .collection('clients')
-      //         .where('docId', isEqualTo: widget.id)
-      //         .snapshots(),
-      //     builder: (BuildContext context,
-      //         AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-      //       if (!snapshot.hasData) {
-      //         return const Center(
-      //           child: CircularProgressIndicator(),
-      //         );
-      //       } else {
-      //         return ListView.builder(
-      //           scrollDirection: Axis.vertical,
-      //           shrinkWrap: true,
-      //           //itemCount: snapshot.data!.docs.length,
-      //           itemCount: 1,
-      //           itemBuilder: (context, index) {
-      //             DocumentSnapshot client = snapshot.data!.docs[index];
-      //             return Container(
-      //               child: Column(
-      //                 children: [
-      //                   Text('Outstanding :${total}'),
-      //                   TextButton(
-      //                       onPressed: () {
-      //                         sum = 0;
-      //                         FirebaseFirestore.instance
-      //                             .collection('transactions')
-      //                             .where('partyId', isEqualTo: widget.id.trim())
-      //                             .get()
-      //                             .then((querySnapshot) {
-      //                           querySnapshot.docs.forEach((element) {
-      //                             if (element.data()['type'] == 'credit') {
-      //                               sum = sum - element.data()['Amount'];
-      //                             } else {
-      //                               sum = sum + element.data()['Amount'];
-      //                             }
-      //                             FirebaseFirestore.instance
-      //                                 .collection('clients')
-      //                                 .doc(widget.id.trim())
-      //                                 .update({'outstanding': sum});
-      //                           });
-      //                           setState(() {
-      //                             total = sum;
-      //                           });
-      //                         });
-      //                       },
-      //                       child: Icon(Icons.refresh)),
-      //                   Text(client['gstn']),
-      //                   TextButton(
-      //                       onPressed: () {
-      //                         Navigator.of(context)
-      //                             .push(MaterialPageRoute(builder: (_) {
-      //                           return transactionList(docId: client['docId']);
-      //                         }));
-      //                       },
-      //                       child: Text('View Transaction')),
-      //                   TextButton(
-      //                       onPressed: () {
-      //                         Navigator.of(context)
-      //                             .push(MaterialPageRoute(builder: (_) {
-      //                           return addTrans(id: client['docId']);
-      //                         }));
-      //                       },
-      //                       child: Text('Record Transaction'))
-      //                 ],
-      //               ),
-      //             );
-      //           },
-      //         );
-      //       }
-      //       ;
-      //     },
-      //   ),
-      // ),
       body: Container(
         child: FutureBuilder<DocumentSnapshot>(
           future: FirebaseFirestore.instance
@@ -179,7 +103,7 @@ class _detailedViewState extends State<detailedView> {
                           });
                         },
                         child: Icon(Icons.refresh)),
-                    Text(data['gstn']),
+                    Text('GSTN :' + data['gstn']),
                     TextButton(
                         onPressed: () {
                           Navigator.of(context)

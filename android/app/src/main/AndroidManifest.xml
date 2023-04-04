@@ -12,7 +12,7 @@
     <application
         android:label="SharathAgencies"
         android:name="${applicationName}"
-        android:icon="@mipmap/launch">
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"

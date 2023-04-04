@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -17,30 +18,52 @@ class ewayBillDisplay extends StatefulWidget {
 }
 
 class _ewayBillDisplayState extends State<ewayBillDisplay> {
+  late Reference _storageRef;
+  late var _downloadTask;
+  late Uint8List? pdf;
+  double _percentage = 0.0;
   Future<void> loadNetwork(String path, String name, Reference ref) async {
-    Uint8List? pdf = await ref.getData();
+    pdf = await ref.getData();
+
+    // await _downloadTask.asStream().listen((taskSnapshot) {
+    //   setState(() {
+    //     _percentage =
+    //         (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes * 100)
+    //             .toInt();
+    //   });
+    // });
+    // _downloadTask.then((taskSnapshot) {
+    //   setState(() {
+    //     _percentage = 100;
+    //     pdf = _downloadTask;
+    //   });
+    // });
 
     final dir = (await getExternalStorageDirectory())?.path;
     var file = File('${dir}/$name');
 
+    print('hi');
     await file.writeAsBytes(pdf!, flush: true);
     OpenFile.open('$dir/$name');
+
     Navigator.pop(context);
   }
 
   Widget buildFile(BuildContext context, FirebaseFiles file) {
     return ListTile(
-      onTap: () {
+      onTap: () async {
         showDialog(
           context: context,
           builder: (ctx) {
             return AlertDialog(
-              title: Text('Loading'),
-              content: LinearProgressIndicator(),
+              title: Text('Loading...'),
+              content: LinearProgressIndicator(
+                  //value: _percentage / 100,
+                  ),
             );
           },
         );
-        loadNetwork(file.url, file.name, file.ref);
+        await loadNetwork(file.url, file.name, file.ref);
       },
       title: Text(file.name),
       leading: Icon(Icons.picture_as_pdf),
