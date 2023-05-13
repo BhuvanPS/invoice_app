@@ -23,6 +23,7 @@ class proformaDetail extends StatefulWidget {
   late num sgst;
   late num cgst;
   late num total;
+  late bool tcs;
   proformaDetail(
       {required this.invno,
       required this.partyname,
@@ -36,7 +37,8 @@ class proformaDetail extends StatefulWidget {
       required this.exmill,
       required this.sgst,
       required this.cgst,
-      required this.total});
+      required this.total,
+      required this.tcs});
 
   @override
   State<proformaDetail> createState() => _proformaDetailState();
@@ -67,21 +69,23 @@ class _proformaDetailState extends State<proformaDetail> {
   }
 
   Future<void> createPDF(
-      String invno,
-      String gstn,
-      String partyline1,
-      String partyline2,
-      String partypin,
-      String partyname,
-      String invDate,
-      String dueDate,
-      String product,
-      String hsn,
-      String gstr,
-      String qty,
-      String rate,
-      String amount,
-      String Acamount) async {
+    String invno,
+    String gstn,
+    String partyline1,
+    String partyline2,
+    String partypin,
+    String partyname,
+    String invDate,
+    String dueDate,
+    String product,
+    String hsn,
+    String gstr,
+    String qty,
+    String rate,
+    String amount,
+    String Acamount,
+    bool tcs,
+  ) async {
     final putComma = addCommasIndian();
     double getAmt = double.parse(Acamount);
     int gstAmt = (((double.parse(gstr)) / 200) * getAmt).round();
@@ -89,6 +93,14 @@ class _proformaDetailState extends State<proformaDetail> {
     var finalgst = putComma(gstAmt);
     var finTotAmt = putComma(totalamt);
     var wordamt = (NumberToWord().convert('en-in', totalamt)).toUpperCase();
+    double tcsAmt = getAmt * 0.001;
+    double extraHeight = 0;
+    if (tcs) {
+      totalamt = getAmt.round() + (gstAmt * 2).round() + tcsAmt.round();
+      wordamt = (NumberToWord().convert('en-in', totalamt)).toUpperCase();
+      extraHeight = 17;
+      finTotAmt = putComma(totalamt);
+    }
     //Create a new PDF document
     PdfDocument document = PdfDocument();
     document.pageSettings.size = PdfPageSize.a4;
@@ -498,21 +510,35 @@ class _proformaDetailState extends State<proformaDetail> {
       brush: PdfBrushes.black,
       bounds: Rect.fromLTWH(337, 392, 0, 0),
     );
+    if (tcs) {
+      page.graphics.drawString(
+        'TCS     0.1%',
+        font,
+        brush: PdfBrushes.black,
+        bounds: Rect.fromLTWH(337, 392 + extraHeight, 0, 0),
+      );
+      page.graphics.drawString(
+        '₹${tcsAmt.toStringAsFixed(0)}',
+        font,
+        brush: PdfBrushes.black,
+        bounds: Rect.fromLTWH(450, 392 + extraHeight, 0, 0),
+      );
+    }
 
     page.graphics.drawLine(PdfPen(PdfColor(0, 0, 0), width: 3),
-        Offset(336, 412), Offset(506, 412));
+        Offset(336, 412 + extraHeight), Offset(506, 412 + extraHeight));
 
     page.graphics.drawString(
       'Total(INR)',
       PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
       brush: PdfBrushes.black,
-      bounds: Rect.fromLTWH(337, 417, 0, 0),
+      bounds: Rect.fromLTWH(337, 417 + extraHeight, 0, 0),
     );
     page.graphics.drawString(
       '₹${finTotAmt}',
       font1,
       brush: PdfBrushes.black,
-      bounds: Rect.fromLTWH(433, 417, 0, 0),
+      bounds: Rect.fromLTWH(433, 417 + extraHeight, 0, 0),
     );
     page.graphics.drawString(
       'Total in Words : ${wordamt} Only',
@@ -521,7 +547,7 @@ class _proformaDetailState extends State<proformaDetail> {
       bounds: Rect.fromLTWH(15, 469, 0, 0),
     );
     page.graphics.drawLine(PdfPen(PdfColor(0, 0, 0), width: 3),
-        Offset(336, 438), Offset(506, 438));
+        Offset(336, 438 + extraHeight), Offset(506, 438 + extraHeight));
     page.graphics.drawImage(
       PdfBitmap(await _readImageData('sign.jpg')),
       Rect.fromLTWH(360, 520, 130, 100),
@@ -584,7 +610,8 @@ class _proformaDetailState extends State<proformaDetail> {
                     widget.qty.toString(),
                     widget.rate.toString(),
                     putComma(widget.exmill.ceil()).toString(),
-                    widget.exmill.toString());
+                    widget.exmill.toString(),
+                    widget.tcs);
               },
               icon: Icon(Icons.print),
             )

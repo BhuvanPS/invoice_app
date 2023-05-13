@@ -69,6 +69,7 @@ class _viewProformaState extends State<viewProforma> {
                 sgst: snapshot.data![index]['SGST'],
                 cgst: snapshot.data![index]['CGST'],
                 total: snapshot.data![index]['TotalAmount'],
+                tcs: snapshot.data![index]['tcs'],
               );
             },
           );

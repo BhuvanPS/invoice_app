@@ -26,6 +26,7 @@ class pdfgen extends StatefulWidget {
   late final String rate;
   late final String amt;
   late final String Acamount;
+  late final bool tcs;
 
   pdfgen(
       {required this.invno,
@@ -42,7 +43,8 @@ class pdfgen extends StatefulWidget {
       required this.gstr,
       required this.hsn,
       required this.product,
-      required this.Acamount});
+      required this.Acamount,
+      required this.tcs});
 
   @override
   State<pdfgen> createState() => _pdfgenState();
@@ -61,7 +63,8 @@ class _pdfgenState extends State<pdfgen> {
       String qty,
       String Acamount,
       String product,
-      String hsn) async {
+      String hsn,
+      bool tcs) async {
     double getAmt = double.parse(Acamount);
     int gstAmt = (((double.parse(gstr)) / 200) * getAmt).round();
     int totalamt = getAmt.round() + (gstAmt * 2).round();
@@ -79,6 +82,7 @@ class _pdfgenState extends State<pdfgen> {
       'TotalAmount': totalamt,
       'product': product,
       'hsn': hsn,
+      'tcs': true,
     }).then((value) {
       FirebaseFirestore.instance
           .collection('proformaInvoices')
@@ -88,21 +92,23 @@ class _pdfgenState extends State<pdfgen> {
   }
 
   Future<void> createPDF(
-      String invno,
-      String gstn,
-      String partyline1,
-      String partyline2,
-      String partypin,
-      String partyname,
-      String invDate,
-      String dueDate,
-      String product,
-      String hsn,
-      String gstr,
-      String qty,
-      String rate,
-      String amount,
-      String Acamount) async {
+    String invno,
+    String gstn,
+    String partyline1,
+    String partyline2,
+    String partypin,
+    String partyname,
+    String invDate,
+    String dueDate,
+    String product,
+    String hsn,
+    String gstr,
+    String qty,
+    String rate,
+    String amount,
+    String Acamount,
+    bool tcs,
+  ) async {
     final putComma = addCommasIndian();
     double getAmt = double.parse(Acamount);
     int gstAmt = (((double.parse(gstr)) / 200) * getAmt).round();
@@ -110,6 +116,14 @@ class _pdfgenState extends State<pdfgen> {
     var finalgst = putComma(gstAmt);
     var finTotAmt = putComma(totalamt);
     var wordamt = (NumberToWord().convert('en-in', totalamt)).toUpperCase();
+    double tcsAmt = getAmt * 0.001;
+    double extraHeight = 0;
+    if (tcs) {
+      totalamt = getAmt.round() + (gstAmt * 2).round() + tcsAmt.round();
+      wordamt = (NumberToWord().convert('en-in', totalamt)).toUpperCase();
+      extraHeight = 17;
+      finTotAmt = putComma(totalamt);
+    }
     //Create a new PDF document
     PdfDocument document = PdfDocument();
     document.pageSettings.size = PdfPageSize.a4;
@@ -519,21 +533,35 @@ class _pdfgenState extends State<pdfgen> {
       brush: PdfBrushes.black,
       bounds: Rect.fromLTWH(337, 392, 0, 0),
     );
+    if (tcs) {
+      page.graphics.drawString(
+        'TCS     0.1%',
+        font,
+        brush: PdfBrushes.black,
+        bounds: Rect.fromLTWH(337, 392 + extraHeight, 0, 0),
+      );
+      page.graphics.drawString(
+        '₹${tcsAmt.toStringAsFixed(0)}',
+        font,
+        brush: PdfBrushes.black,
+        bounds: Rect.fromLTWH(450, 392 + extraHeight, 0, 0),
+      );
+    }
 
     page.graphics.drawLine(PdfPen(PdfColor(0, 0, 0), width: 3),
-        Offset(336, 412), Offset(506, 412));
+        Offset(336, 412 + extraHeight), Offset(506, 412 + extraHeight));
 
     page.graphics.drawString(
       'Total(INR)',
       PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
       brush: PdfBrushes.black,
-      bounds: Rect.fromLTWH(337, 417, 0, 0),
+      bounds: Rect.fromLTWH(337, 417 + extraHeight, 0, 0),
     );
     page.graphics.drawString(
       '₹${finTotAmt}',
       font1,
       brush: PdfBrushes.black,
-      bounds: Rect.fromLTWH(433, 417, 0, 0),
+      bounds: Rect.fromLTWH(433, 417 + extraHeight, 0, 0),
     );
     page.graphics.drawString(
       'Total in Words : ${wordamt} Only',
@@ -542,7 +570,7 @@ class _pdfgenState extends State<pdfgen> {
       bounds: Rect.fromLTWH(15, 469, 0, 0),
     );
     page.graphics.drawLine(PdfPen(PdfColor(0, 0, 0), width: 3),
-        Offset(336, 438), Offset(506, 438));
+        Offset(336, 438 + extraHeight), Offset(506, 438 + extraHeight));
     page.graphics.drawImage(
       PdfBitmap(await _readImageData('sign.jpg')),
       Rect.fromLTWH(360, 520, 130, 100),
@@ -598,42 +626,44 @@ class _pdfgenState extends State<pdfgen> {
                     .toString()),
             Center(
                 child: TextButton(
-                    onPressed: () {
-                      createPDF(
-                          widget.invno,
-                          widget.gstn,
-                          widget.line1,
-                          widget.line2,
-                          widget.pin,
-                          widget.partyName,
-                          widget.invDate,
-                          widget.dueDate,
-                          widget.product,
-                          widget.hsn,
-                          widget.gstr,
-                          widget.qty,
-                          widget.rate,
-                          widget.amt,
-                          widget.Acamount);
-                    },
-                    child: Text('Create PDF'))),
+              onPressed: () {
+                createPDF(
+                    widget.invno,
+                    widget.gstn,
+                    widget.line1,
+                    widget.line2,
+                    widget.pin,
+                    widget.partyName,
+                    widget.invDate,
+                    widget.dueDate,
+                    widget.product,
+                    widget.hsn,
+                    widget.gstr,
+                    widget.qty,
+                    widget.rate,
+                    widget.amt,
+                    widget.Acamount,
+                    widget.tcs);
+              },
+              child: Text('Create PDF'),
+            )),
             Center(
               child: TextButton(
                 onPressed: () async {
                   if (saveCount == 0) {
                     await uploadingData(
-                      widget.invno,
-                      widget.invDate,
-                      widget.dueDate,
-                      widget.gstn,
-                      widget.partyName,
-                      widget.gstr,
-                      widget.rate,
-                      widget.qty,
-                      widget.Acamount,
-                      widget.product,
-                      widget.hsn,
-                    );
+                        widget.invno,
+                        widget.invDate,
+                        widget.dueDate,
+                        widget.gstn,
+                        widget.partyName,
+                        widget.gstr,
+                        widget.rate,
+                        widget.qty,
+                        widget.Acamount,
+                        widget.product,
+                        widget.hsn,
+                        widget.tcs);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                           content: Row(

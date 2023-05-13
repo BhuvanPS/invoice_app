@@ -66,6 +66,8 @@ class _getInvDetailsState extends State<getInvDetails> {
     });
   }
 
+  bool tcs = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -178,7 +180,6 @@ class _getInvDetailsState extends State<getInvDetails> {
                         .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
-
                       if (!snapshot.hasData) {
                         return Center(
                           child: CircularProgressIndicator(),
@@ -219,7 +220,7 @@ class _getInvDetailsState extends State<getInvDetails> {
                       }
                     },
                   ),
-                  SizedBox(height:8),
+                  SizedBox(height: 8),
                   TextFormField(
                     controller: product,
                     decoration: InputDecoration(
@@ -267,9 +268,42 @@ class _getInvDetailsState extends State<getInvDetails> {
                       ),
                     ],
                   ),
-                  // SizedBox(
-                  //   height: 10,
-                  // ),
+                  Container(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ListTile(
+                            title: Text('Yes'),
+                            leading: Radio(
+                              value: true,
+                              groupValue: tcs,
+                              onChanged: (value) {
+                                setState(() {
+                                  tcs = true;
+                                });
+                                print(tcs);
+                              },
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: ListTile(
+                            title: Text('No'),
+                            leading: Radio(
+                              value: false,
+                              groupValue: tcs,
+                              onChanged: (value) {
+                                setState(() {
+                                  tcs = false;
+                                });
+                                print(tcs);
+                              },
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                   TextFormField(
                     scrollPadding: EdgeInsets.only(bottom: 130),
                     keyboardType: TextInputType.number,
@@ -326,12 +360,10 @@ class _getInvDetailsState extends State<getInvDetails> {
                   SizedBox(
                     height: 15,
                   ),
-
                   Text(
                     Amount.toString(),
                     style: TextStyle(fontSize: 25),
                   ),
-
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
@@ -358,6 +390,7 @@ class _getInvDetailsState extends State<getInvDetails> {
                                 hsn: hsncode,
                                 gstr: gstRate,
                                 Acamount: Amount.toString(),
+                                tcs: tcs,
                               );
                             },
                           ),

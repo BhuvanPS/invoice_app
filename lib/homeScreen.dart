@@ -9,7 +9,6 @@ import 'package:inventory/initialise.dart';
 import 'package:inventory/proformaInvoice/viewProforma.dart';
 import 'package:inventory/transactions/allTransactions.dart';
 
-import './gstnSearch/gstnSearch.dart';
 import 'proformaInvoice/getInvDetails.dart';
 
 class homeScreen extends StatefulWidget {
@@ -159,35 +158,35 @@ class _homeScreenState extends State<homeScreen> {
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                return gstnSearch();
-              }));
-            },
-            child: Container(
-              //padding: const EdgeInsets.all(10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.search),
-                  Text('GST Search'),
-                ],
-              ),
-              decoration: BoxDecoration(
-                // image: DecorationImage(image: NetworkImage(bgurl)),
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.red.withOpacity(0.7),
-                    Colors.red,
-                  ],
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                ),
-                borderRadius: BorderRadius.circular(15),
-              ),
-            ),
-          ),
+          // GestureDetector(
+          //   onTap: () {
+          //     Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+          //       return gstnSearch();
+          //     }));
+          //   },
+          //   child: Container(
+          //     //padding: const EdgeInsets.all(10),
+          //     child: Column(
+          //       mainAxisAlignment: MainAxisAlignment.center,
+          //       children: [
+          //         Icon(Icons.search),
+          //         Text('GST Search'),
+          //       ],
+          //     ),
+          //     decoration: BoxDecoration(
+          //       // image: DecorationImage(image: NetworkImage(bgurl)),
+          //       gradient: LinearGradient(
+          //         colors: [
+          //           Colors.red.withOpacity(0.7),
+          //           Colors.red,
+          //         ],
+          //         begin: Alignment.topRight,
+          //         end: Alignment.bottomLeft,
+          //       ),
+          //       borderRadius: BorderRadius.circular(15),
+          //     ),
+          //   ),
+          // ),
           GestureDetector(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (_) {

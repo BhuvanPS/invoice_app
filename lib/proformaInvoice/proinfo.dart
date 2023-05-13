@@ -16,6 +16,7 @@ class proinfo extends StatefulWidget {
   late num sgst;
   late num cgst;
   late num total;
+  late bool tcs;
 
   proinfo(
       {required this.invno,
@@ -30,7 +31,8 @@ class proinfo extends StatefulWidget {
       required this.exmill,
       required this.sgst,
       required this.cgst,
-      required this.total});
+      required this.total,
+      required this.tcs});
 
   @override
   State<proinfo> createState() => _proinfoState();
@@ -56,6 +58,7 @@ class _proinfoState extends State<proinfo> {
             cgst: widget.cgst,
             total: widget.total,
             invno: widget.invno,
+            tcs: widget.tcs,
           );
         }));
       },
@@ -116,7 +119,7 @@ class _proinfoState extends State<proinfo> {
                                         .doc(widget.docId)
                                         .delete();
                                     Navigator.of(context).pop();
-
+                                    //  setState(() {});
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                           content: Row(
