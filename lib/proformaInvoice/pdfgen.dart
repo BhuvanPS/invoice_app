@@ -154,7 +154,7 @@ class _pdfgenState extends State<pdfgen> {
       bounds: Rect.fromLTWH(15, 550, 0, 0),
     );
     page.graphics.drawString(
-      'SHARATH AGENCIES',
+      'Fill name Here',
       PdfStandardFont(
         PdfFontFamily.helvetica,
         11,
@@ -171,7 +171,7 @@ class _pdfgenState extends State<pdfgen> {
     );
 
     page.graphics.drawString(
-      '0338073000001735',
+      'xxxxxxxxxxx',
       PdfStandardFont(
         PdfFontFamily.helvetica,
         11,
@@ -186,7 +186,7 @@ class _pdfgenState extends State<pdfgen> {
       bounds: Rect.fromLTWH(15, 590, 0, 0),
     );
     page.graphics.drawString(
-      'SIBL0000338',
+      'ifsc',
       PdfStandardFont(PdfFontFamily.helvetica, 11),
       brush: PdfBrushes.black,
       bounds: Rect.fromLTWH(150, 590, 0, 0),
@@ -198,7 +198,7 @@ class _pdfgenState extends State<pdfgen> {
       bounds: Rect.fromLTWH(15, 610, 0, 0),
     );
     page.graphics.drawString(
-      'SOUTH INDIAN BANK LTD',
+      'BANK LTD',
       PdfStandardFont(PdfFontFamily.helvetica, 11),
       brush: PdfBrushes.black,
       bounds: Rect.fromLTWH(150, 610, 0, 0),
